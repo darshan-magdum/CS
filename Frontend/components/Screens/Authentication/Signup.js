@@ -12,7 +12,7 @@ import {
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import logo from '../../assets/images/logo.jpeg';
+import logo from '../../../assets/images/logo.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Signup() {
