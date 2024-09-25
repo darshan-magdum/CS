@@ -24,6 +24,7 @@ const InfoScreen = () => {
       description: "Access helpful tips and resources tailored for your safety."
     }
   ];
+  
 
   const handleNext = () => {
     if (currentInfoIndex < infoItems.length - 1) {
