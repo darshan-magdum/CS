@@ -15,7 +15,7 @@ import profile from "../../../assets/images/profile.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-export default function AdminMenu() {
+export default function StudentMenu() {
   const navigation = useNavigation();
 
   const [userData, setUserData] = useState(null); // State to hold user data
@@ -137,7 +137,7 @@ export default function AdminMenu() {
   <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
   <FeatherIcon color="#fff" name="file-text" size={20} />
   </View>
-  <Text style={styles.rowLabel}>Add New Article</Text>
+  <Text style={styles.rowLabel}>Add New Post</Text>
   <View style={styles.rowSpacer} />
   <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
 </TouchableOpacity>
@@ -150,13 +150,13 @@ export default function AdminMenu() {
               <View style={[styles.rowIcon, { backgroundColor: "tomato" }]}>
                 <FeatherIcon color="#fff" name="eye" size={20} />
               </View>
-              <Text style={styles.rowLabel}>Manage Article</Text>
+              <Text style={styles.rowLabel}>Manage Posts</Text>
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
 
-            {/* Add Helpline Contacts */}
+            {/* Add Emergency Contacts */}
             <TouchableOpacity
               onPress={() => navigation.navigate("AddEmergencyContact")}
               style={styles.row}
@@ -164,41 +164,48 @@ export default function AdminMenu() {
               <View style={[styles.rowIcon, { backgroundColor: "purple" }]}>
               <FeatherIcon color="#fff" name="phone" size={20} />
               </View>
-              <Text style={styles.rowLabel}>Add Helpline Numbers</Text>
+              <Text style={styles.rowLabel}>Add Emergency Contact</Text>
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-       
+            <TouchableOpacity
+              onPress={() => navigation.navigate("ViewBranches")}
+              style={styles.row}
+            >
+              <View style={[styles.rowIcon, { backgroundColor: "tomato" }]}>
+                <FeatherIcon color="#fff" name="eye" size={20} />
+              </View>
+              <Text style={styles.rowLabel}>View Emergency Contacts</Text>
+              <View style={styles.rowSpacer} />
+              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+            </TouchableOpacity>
 
-            {/* View Incidents */}
+            {/* Add Incidents */}
+            <TouchableOpacity
+              onPress={() => navigation.navigate("VendorRegistration")}
+              style={styles.row}
+            >
+              <View style={[styles.rowIcon, { backgroundColor: "#fe9400" }]}>
+                <FeatherIcon color="#fff" name="plus" size={20} />
+              </View>
+              <Text style={styles.rowLabel}>Report Incidents</Text>
+              <View style={styles.rowSpacer} />
+              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+            </TouchableOpacity>
+
+            {/* View Helpline Numbers */}
             <TouchableOpacity
               onPress={() => navigation.navigate("ViewVendors")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "red" }]}>
-                <FeatherIcon color="#fff" name="eye" size={20} />
+              <FeatherIcon color="#fff" name="phone" size={20} />
               </View>
-              <Text style={styles.rowLabel}>View Incidents</Text>
+              <Text style={styles.rowLabel}>View Helpline Numbers</Text>
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
-
-
-            {/* View helps */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("ViewVendors")}
-              style={styles.row}
-            >
-              <View style={[styles.rowIcon, { backgroundColor: "red" }]}>
-                <FeatherIcon color="#fff" name="eye" size={20} />
-              </View>
-              <Text style={styles.rowLabel}>View Help Alerts</Text>
-              <View style={styles.rowSpacer} />
-              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-            </TouchableOpacity>
-
-
 
             <TouchableOpacity onPress={handleLogout} style={styles.row}>
               <View style={[styles.rowIcon, { backgroundColor: "#8e8d91" }]}>
@@ -211,8 +218,6 @@ export default function AdminMenu() {
 
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
-
-
           </View>
         </ScrollView>
       </View>

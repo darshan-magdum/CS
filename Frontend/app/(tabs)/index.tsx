@@ -5,6 +5,7 @@ import SplashSceenSignup from "../../components/Screens/Intro/SplashSceenSignup"
 import Signup from "../../components/Screens/Authentication/Signup";
 import Login from "../../components/Screens/Authentication/Login";
 import AdminMenu from "../../components/Screens/Admin/AdminMenu";
+import StudentMenu from "../../components/Screens/Students/StudentMenu";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -20,7 +21,10 @@ const Stack = createNativeStackNavigator();
       
         <Stack.Navigator screenOptions={{ headerShown: false }}>
 
+        <Stack.Screen name="StudentMenu" component={StudentMenu} />
         <Stack.Screen name="AdminMenu" component={AdminMenu} />
+        
+    
 
           {/* <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="InfoScreen" component={InfoScreen} />
