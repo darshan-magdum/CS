@@ -142,7 +142,7 @@ export default function Signup() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#e8ecf4' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <KeyboardAwareScrollView>
           <View style={styles.header}>
@@ -153,7 +153,7 @@ export default function Signup() {
               source={logo}
             />
             <Text style={styles.title}>
-              Sign up <Text style={{ color: '#075eec' }}>Now</Text>
+              Sign up <Text style={{ color: '#FF8613' }}>Now</Text>
             </Text>
             <Text style={styles.subtitle}>
               Create your account to get started
@@ -264,7 +264,7 @@ export default function Signup() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 24,
+    paddingVertical: 0,
     paddingHorizontal: 0,
     flexGrow: 1,
     flexShrink: 1,
@@ -288,8 +288,8 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     alignSelf: 'center',
   },
   /** Form */
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   formLink: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#075eec',
+    color: 'black',
     textAlign: 'center',
   },
   /** Input */
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   },
   inputControl: {
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 15,
@@ -341,8 +341,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,
-    backgroundColor: '#075eec',
-    borderColor: '#075eec',
+    backgroundColor: '#FF8613',
+    borderColor: '#FF8613',
   },
   btnText: {
     fontSize: 18,
