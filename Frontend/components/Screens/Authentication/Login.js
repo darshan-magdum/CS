@@ -277,8 +277,8 @@ const styles = StyleSheet.create({
     marginVertical: 36,
   },
   headerImg: {
-    width: 80,
-    height: 80,
+    width: 250,
+    height: 200,
     alignSelf: 'center',
   },
   /** Form */
