@@ -24,7 +24,7 @@ const SplashScreen = () => {
             duration: fadeOutDuration,
             useNativeDriver: true,
           }).start(() => {
-            navigation.navigate('InfoScreen'); 
+            navigation.navigate('Login'); 
           });
         }, 2000);
       });
