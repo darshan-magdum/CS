@@ -2,6 +2,8 @@ import { StyleSheet, View, Platform, KeyboardAvoidingView } from "react-native";
 import SplashScreen from "../../components/Screens/Intro/SplashScreen";
 import InfoScreen from "../../components/Screens/Intro/InfoScreen";
 import SplashSceenSignup from "../../components/Screens/Intro/SplashSceenSignup";
+import Signup from "../../components/Screens/Authentication/Signup";
+import Login from "../../components/Screens/Authentication/Login";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -17,11 +19,17 @@ const Stack = createNativeStackNavigator();
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="InfoScreen" component={InfoScreen} />
-
+       
           <Stack.Screen
             name="SplashSceenSignup"
             component={SplashSceenSignup}
           />
+
+
+<Stack.Screen name="Login" component={Login} />
+<Stack.Screen name="Signup" component={Signup} />
+
+
         </Stack.Navigator>
       </KeyboardAvoidingView>
     </>

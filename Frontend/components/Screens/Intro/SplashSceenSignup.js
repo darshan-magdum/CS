@@ -53,7 +53,7 @@ const SplashScreenSignup = () => {
         console.log('User Details:', response.data);
         
         // Navigate to UserHome screen or perform further actions
-        navigation.navigate('UserHome');
+        navigation.navigate('Login');
       } catch (error) {
         console.error('Error fetching user details:', error);
         // Handle error scenarios
