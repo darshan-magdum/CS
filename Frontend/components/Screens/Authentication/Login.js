@@ -172,7 +172,7 @@ export default function Login() {
   }, []);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#e8ecf4' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
       <View style={styles.container}>
         <KeyboardAwareScrollView>
           <View style={styles.header}>
@@ -183,7 +183,7 @@ export default function Login() {
               source={logo}
             />
             <Text style={styles.title}>
-              Login <Text style={{ color: '#075eec' }}>Now</Text>
+              Login <Text style={{ color: '#FF8613' }}>Now</Text>
             </Text>
             <Text style={styles.subtitle}>
               Get access to your portfolio and more
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
   formLink: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#075eec',
+    color: '#FF8613',
     textAlign: 'center',
   },
   formFooter: {
@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
   },
   inputControl: {
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 15,
@@ -333,8 +333,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,
-    backgroundColor: '#075eec',
-    borderColor: '#075eec',
+    backgroundColor: '#FF8613',
+    borderColor: '#FF8613',
     marginBottom: 10,
   },
   btnText: {
