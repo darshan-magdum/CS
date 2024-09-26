@@ -74,7 +74,7 @@ const SplashScreenSignup = () => {
       end={{ x: 1, y: 0 }}
       style={styles.container}
     >
-      <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>Welcome {userName}</Animated.Text>
+      <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>Welcome Aryan</Animated.Text>
       <Animated.Text style={[styles.subtitle, { opacity: fadeAnim }]}>
         Getting ready for you
       </Animated.Text>

@@ -21,22 +21,25 @@ const Stack = createNativeStackNavigator();
       
         <Stack.Navigator screenOptions={{ headerShown: false }}>
 
-        <Stack.Screen name="StudentMenu" component={StudentMenu} />
         <Stack.Screen name="AdminMenu" component={AdminMenu} />
-        
-    
-
-          {/* <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          <Stack.Screen name="InfoScreen" component={InfoScreen} />
+        <Stack.Screen name="StudentMenu" component={StudentMenu} />
        
-          <Stack.Screen
+        <Stack.Screen name="InfoScreen" component={InfoScreen} />
+        <Stack.Screen
             name="SplashSceenSignup"
             component={SplashSceenSignup}
           />
-
-
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+        
+       
+         
 <Stack.Screen name="Login" component={Login} />
-<Stack.Screen name="Signup" component={Signup} /> */}
+<Stack.Screen name="Signup" component={Signup} />
+      
+        
+    
+
+       
 
 
         </Stack.Navigator>

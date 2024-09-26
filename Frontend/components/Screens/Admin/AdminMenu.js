@@ -170,6 +170,18 @@ export default function AdminMenu() {
             </TouchableOpacity>
 
        
+       {/* Manage Helpline Contacts */}
+       <TouchableOpacity
+              onPress={() => navigation.navigate("AddEmergencyContact")}
+              style={styles.row}
+            >
+              <View style={[styles.rowIcon, { backgroundColor: "blue" }]}>
+              <FeatherIcon color="#fff" name="phone" size={20} />
+              </View>
+              <Text style={styles.rowLabel}>Manage Helpline Numbers</Text>
+              <View style={styles.rowSpacer} />
+              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+            </TouchableOpacity>
 
             {/* View Incidents */}
             <TouchableOpacity
