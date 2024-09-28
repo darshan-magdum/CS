@@ -65,9 +65,7 @@ export default function AdminMenu() {
       <View style={styles.container}>
         <View style={styles.profile}>
           <TouchableOpacity
-            onPress={() => {
-              // handle onPress
-            }}
+             onPress={() => navigation.navigate("AdminHome")}
           >
             <View style={styles.profileAvatarWrapper}>
               <Image alt="" source={profile} style={styles.profileAvatar} />
@@ -120,7 +118,7 @@ export default function AdminMenu() {
 
             {/* Your Profile */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("AdminProfileView")}
+              onPress={() => navigation.navigate("AdminProfile")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "#32c759" }]}>
@@ -132,7 +130,7 @@ export default function AdminMenu() {
             </TouchableOpacity>
 
             <TouchableOpacity
-  onPress={() => navigation.navigate('NewPostScreen')} 
+  onPress={() => navigation.navigate('AddArticle')} 
   style={styles.row}>
   <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
   <FeatherIcon color="#fff" name="file-text" size={20} />
@@ -144,7 +142,7 @@ export default function AdminMenu() {
 
 
 <TouchableOpacity
-              onPress={() => navigation.navigate("ViewBranches")}
+              onPress={() => navigation.navigate("ManageArticle")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "tomato" }]}>
@@ -158,7 +156,7 @@ export default function AdminMenu() {
 
             {/* Add Helpline Contacts */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("AddEmergencyContact")}
+              onPress={() => navigation.navigate("AddHelplineNumber")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "purple" }]}>
@@ -170,9 +168,9 @@ export default function AdminMenu() {
             </TouchableOpacity>
 
        
-       {/* Manage Helpline Contacts */}
+       {/* Add Emergency Contacts */}
        <TouchableOpacity
-              onPress={() => navigation.navigate("AddEmergencyContact")}
+              onPress={() => navigation.navigate("ManageHelplineNumbers")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "blue" }]}>
@@ -185,7 +183,7 @@ export default function AdminMenu() {
 
             {/* View Incidents */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("ViewVendors")}
+              onPress={() => navigation.navigate("ViewIncidents")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "red" }]}>
@@ -197,9 +195,9 @@ export default function AdminMenu() {
             </TouchableOpacity>
 
 
-            {/* View helps */}
+            {/* View help Info */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("ViewVendors")}
+              onPress={() => navigation.navigate("ViewHelpInfo")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "red" }]}>

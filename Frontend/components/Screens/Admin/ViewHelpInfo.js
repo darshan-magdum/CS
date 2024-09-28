@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   icon: {
-    width: 50,
+    width: 45,
     height: 55,
     marginRight: 10,
   },
