@@ -28,13 +28,14 @@ export default function HomeScreen() {
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
         
+        <Stack.Screen name="StudentMenu" component={StudentMenu} />
         <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
         <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact} />
 
         <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />        
         <Stack.Screen name="ViewHelplineNumbers" component={ViewHelplineNumbers} />
 
-        <Stack.Screen name="StudentMenu" component={StudentMenu} />
+  
    
 
           <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
