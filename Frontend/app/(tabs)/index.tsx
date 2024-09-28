@@ -51,7 +51,7 @@ export default function HomeScreen() {
           {/* Admin Navigation */}
      
 
-    
+          <Stack.Screen name="AdminHome" component={AdminHome} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
           <Stack.Screen name="AdminProfile" component={AdminProfile} />
           <Stack.Screen name="AddArticle" component={AddArticle} />
