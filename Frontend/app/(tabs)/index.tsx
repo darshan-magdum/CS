@@ -34,34 +34,29 @@ export default function HomeScreen() {
         style={styles.Container}
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+          {/* Admin Navigation */}
 
-{/* Admin Navigation */}
-
-
-<Stack.Screen  name="ViewHelpInfo"component={ViewHelpInfo}/>
-<Stack.Screen  name="ViewIncidents"component={ViewIncidents}/>
-<Stack.Screen  name="ManageHelplineNumbers"component={ManageHelplineNumbers}/>
-
-<Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
-<Stack.Screen name="ManageArticle" component={ManageArticle} />
+          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} />
+          <Stack.Screen name="ViewIncidents" component={ViewIncidents} />
+          <Stack.Screen name="ManageHelplineNumbers" component={ManageHelplineNumbers} />
+          <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
+          <Stack.Screen name="ManageArticle" component={ManageArticle} />
           <Stack.Screen name="AddArticle" component={AddArticle} />
           <Stack.Screen name="AdminProfile" component={AdminProfile} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
-          
-     
 
           {/* Student Navigations  */}
           <Stack.Screen name="StudentMenu" component={StudentMenu} />
           <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
-          <Stack.Screen name="StudentAddEmergencyContact"  component={StudentAddEmergencyContact}/>
+          <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact}/>
           <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />
-         
+
           <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
           <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
           <Stack.Screen name="StudentProfile" component={StudentProfile} />
           <Stack.Screen name="StudentHome" component={StudentHome} />
           <Stack.Screen name="InfoScreen" component={InfoScreen} />
-          <Stack.Screen name="SplashSceenSignup" component={SplashSceenSignup}/>
+          <Stack.Screen name="SplashSceenSignup"component={SplashSceenSignup}/>
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={Signup} />
