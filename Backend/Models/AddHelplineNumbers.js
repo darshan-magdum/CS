@@ -17,6 +17,10 @@ const helplineNumberSchema = new mongoose.Schema({
             },
             message: props => `${props.value} is not a valid contact number!`
         }
+    },
+    adminId: {
+        type: String, 
+        required: [true, 'Admin ID is required']
     }
 });
 

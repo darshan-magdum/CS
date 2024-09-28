@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
 
 export default function AddHelplineNumber({ navigation }) {
     const [form, setForm] = useState({
@@ -22,24 +23,31 @@ export default function AddHelplineNumber({ navigation }) {
     };
 
     const handleSubmit = async () => {
+        const AdminId = await AsyncStorage.getItem('adminId'); 
         const phoneRegex = /^\+?\d{10,15}$/;
         let hasError = false;
-
+    
         if (!form.name) {
             setErrors(prev => ({ ...prev, name: 'Name is required.' }));
             hasError = true;
         }
-
+    
         if (!form.contactNo || !phoneRegex.test(form.contactNo)) {
             setErrors(prev => ({ ...prev, contactNo: 'Please enter a valid contact number.' }));
             hasError = true;
         }
-
+    
         if (hasError) return; // Stop if there are validation errors
-
+    
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:3000/api/HelplineNumbers/addnewNumber', form);
+            // Add AdminId to the payload
+            const payload = {
+                ...form,
+                adminId: AdminId,
+            };
+    
+            const response = await axios.post('http://localhost:3000/api/HelplineNumbers/addnewNumber', payload);
             Alert.alert('Success', 'Helpline number added successfully', [
                 { text: 'OK', onPress: () => navigation.goBack() }
             ]);

@@ -5,8 +5,8 @@ const Helpline = require('../Models/AddHelplineNumbers');
 // Create a new helpline number
 router.post('/addnewNumber', async (req, res) => {
     try {
-        const { name, contactNo } = req.body;
-        const helpline = new Helpline({ name, contactNo });
+        const { name, contactNo, adminId } = req.body; // Include adminId
+        const helpline = new Helpline({ name, contactNo, adminId });
         await helpline.save();
         res.status(201).json(helpline);
     } catch (error) {
@@ -43,8 +43,12 @@ router.get('/GetSpecificHelplineNumber/:id', async (req, res) => {
 // Update a helpline number
 router.put('/UpdateHelplineNumber/:id', async (req, res) => {
     try {
-        const { name, contactNo } = req.body;
-        const helpline = await Helpline.findByIdAndUpdate(req.params.id, { name, contactNo }, { new: true, runValidators: true });
+        const { name, contactNo, adminId } = req.body; // Include adminId
+        const helpline = await Helpline.findByIdAndUpdate(
+            req.params.id,
+            { name, contactNo, adminId }, // Update adminId as well
+            { new: true, runValidators: true }
+        );
         if (!helpline) return res.status(404).json({ message: 'Helpline not found' });
         res.json(helpline);
     } catch (error) {
