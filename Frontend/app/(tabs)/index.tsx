@@ -6,6 +6,8 @@ import Signup from "../../components/Screens/Authentication/Signup";
 import Login from "../../components/Screens/Authentication/Login";
 import AdminMenu from "../../components/Screens/Admin/AdminMenu";
 import StudentMenu from "../../components/Screens/Students/StudentMenu";
+import ViewEmergencyContact from "../../components/Screens/Students/ViewEmergencyContact";
+import ViewHelplineNumbers from "../../components/Screens/Students/ViewHelplineNumbers";
 import StudentAddPost from "../../components/Screens/Students/StudentAddPost";
 import StudentViewPost from "../../components/Screens/Students/StudentViewPost";
 import StudentProfile from "../../components/Screens/Students/StudentProfile";
@@ -14,7 +16,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 export default function HomeScreen() {
-const Stack = createNativeStackNavigator();
+  const Stack = createNativeStackNavigator();
 
   return (
     <>
@@ -22,38 +24,34 @@ const Stack = createNativeStackNavigator();
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.Container}
       >
-      
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="StudentViewPost" component={StudentViewPost}/>
+        
+
+
+        <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />        
+        <Stack.Screen name="ViewHelplineNumbers" component={ViewHelplineNumbers} />
 
         <Stack.Screen name="StudentMenu" component={StudentMenu} />
-        <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
-        
-        <Stack.Screen name="StudentProfile" component={StudentProfile} /> 
-     
-       
-        <Stack.Screen name="StudentHome" component={StudentHome} />
-        <Stack.Screen name="AdminMenu" component={AdminMenu} />
-      
-       
-        <Stack.Screen name="InfoScreen" component={InfoScreen} />
-        <Stack.Screen
+   
+
+          <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
+
+          <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
+
+          <Stack.Screen name="StudentProfile" component={StudentProfile} />
+
+          <Stack.Screen name="StudentHome" component={StudentHome} />
+          <Stack.Screen name="AdminMenu" component={AdminMenu} />
+
+          <Stack.Screen name="InfoScreen" component={InfoScreen} />
+          <Stack.Screen
             name="SplashSceenSignup"
             component={SplashSceenSignup}
           />
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        
-       
-         
-<Stack.Screen name="Login" component={Login} />
-<Stack.Screen name="Signup" component={Signup} />
-      
-        
-    
+          <Stack.Screen name="SplashScreen" component={SplashScreen} />
 
-       
-
-
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Signup" component={Signup} />
         </Stack.Navigator>
       </KeyboardAvoidingView>
     </>

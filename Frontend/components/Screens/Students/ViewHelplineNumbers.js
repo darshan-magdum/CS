@@ -2,18 +2,20 @@ import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
-const mockPostData = {
+// Replace this with the path to your local image
+const policeImage = require('../../../assets/images/police.png');
+
+const mockHelplineData = {
   id: 1,
-  name: 'John Doe',
-  date: '2024-09-20',
-  image: 'https://via.placeholder.com/300',
-  description: 'This is a sample description for the post.',
+  name: 'Local Police',
+  number: '911',
 };
 
-export default function StudentViewPost({ navigation }) {
+export default function ViewHelplineNumbers({ navigation }) {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [updatedDescription, setUpdatedDescription] = useState(mockPostData.description);
+  const [updatedName, setUpdatedName] = useState(mockHelplineData.name);
+  const [updatedNumber, setUpdatedNumber] = useState(mockHelplineData.number);
 
   const handleEdit = () => {
     setEditModalVisible(true);
@@ -24,13 +26,14 @@ export default function StudentViewPost({ navigation }) {
   };
 
   const confirmDelete = () => {
-    alert('Post deleted successfully');
+    alert('Helpline number deleted successfully');
     navigation.goBack(); // Navigate back after deletion
   };
 
   const handleSave = () => {
-    mockPostData.description = updatedDescription; // Simulate saving the updated description
-    alert('Post updated successfully');
+    mockHelplineData.name = updatedName; // Simulate saving the updated name
+    mockHelplineData.number = updatedNumber; // Simulate saving the updated number
+    alert('Helpline number updated successfully');
     setEditModalVisible(false);
   };
 
@@ -41,39 +44,46 @@ export default function StudentViewPost({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FeatherIcon name="chevron-left" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>View Post</Text>
+          <Text style={styles.headerTitle}>View Helpline Numbers</Text>
         </View>
 
-        <View style={styles.post}>
-          <View style={styles.postHeader}>
+        <View style={styles.helplineCard}>
+          <View style={styles.helplineHeader}>
+            <Image source={policeImage} style={styles.icon} />
             <View>
-              <Text style={styles.posterName}>{mockPostData.name}</Text>
-              <Text style={styles.postDate}>{mockPostData.date}</Text>
-            </View>
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-                <Text style={styles.actionButtonText}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-                <Text style={styles.actionButtonText}>Delete</Text>
-              </TouchableOpacity>
+              <Text style={styles.helplineName}>{mockHelplineData.name}</Text>
+              <Text style={styles.helplineNumber}>{mockHelplineData.number}</Text>
             </View>
           </View>
-          <Image source={{ uri: mockPostData.image }} style={styles.postImage} />
-          <Text style={styles.postDescription}>{mockPostData.description}</Text>
+          <View style={styles.actionButtons}>
+            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
+              <Text style={styles.actionButtonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
+              <Text style={styles.actionButtonText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
         </View>
 
         {/* Edit Modal */}
         <Modal visible={editModalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Edit Description</Text>
+              <Text style={styles.modalTitle}>Edit Helpline Number</Text>
+              <Text style={styles.label}>Helpline Name</Text>
               <TextInput
-                style={styles.textArea}
-                value={updatedDescription}
-                onChangeText={setUpdatedDescription}
-                multiline
-                placeholder="Edit your description here"
+                style={styles.textInput}
+                value={updatedName}
+                onChangeText={setUpdatedName}
+                placeholder="Enter helpline name"
+                placeholderTextColor="#999"
+              />
+              <Text style={styles.label}>Helpline Number</Text>
+              <TextInput
+                style={styles.textInput}
+                value={updatedNumber}
+                onChangeText={setUpdatedNumber}
+                placeholder="Enter helpline number"
                 placeholderTextColor="#999"
               />
               <View style={styles.modalButtonContainer}>
@@ -92,7 +102,7 @@ export default function StudentViewPost({ navigation }) {
         <Modal visible={deleteModalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Are you sure you want to delete this post?</Text>
+              <Text style={styles.modalTitle}>Are you sure you want to delete this helpline number?</Text>
               <View style={styles.modalButtonContainer}>
                 <TouchableOpacity style={styles.confirmButton} onPress={confirmDelete}>
                   <Text style={styles.confirmButtonText}>Yes</Text>
@@ -130,36 +140,39 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
   },
-  post: {
+  helplineCard: {
     margin: 16,
-    backgroundColor: '#EFEFEF',
+    padding: 16,
+    backgroundColor: '#EEEEEE',
     borderRadius: 15,
-    overflow: 'hidden',
     elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
-  postHeader: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eeeeee',
+  helplineHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
   },
-  posterName: {
+  icon: {
+    width: 54,
+    height: 54,
+    marginRight: 10,
+  },
+  helplineName: {
     fontWeight: 'bold',
     fontSize: 18,
-    color: '#333333',
+    color: '#333',
   },
-  postDate: {
-    color: '#888888',
-    fontSize: 12,
+  helplineNumber: {
+    color: '#888',
+    fontSize: 14,
   },
   actionButtons: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   editButton: {
     backgroundColor: '#007bff',
@@ -176,15 +189,6 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#fff',
     fontWeight: '600',
-  },
-  postImage: {
-    width: '100%',
-    height: 200,
-  },
-  postDescription: {
-    padding: 10,
-    fontSize: 15,
-    color: '#444444',
   },
   modalContainer: {
     flex: 1,
@@ -204,16 +208,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
   },
-  textArea: {
+  label: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 5,
+  },
+  textInput: {
     borderWidth: 1,
     borderColor: '#ccc',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderRadius: 8,
     fontSize: 16,
-    height: 120,
-    textAlignVertical: 'top',
-    color: '#333',
+    height: 50,
     marginBottom: 15,
   },
   modalButtonContainer: {
@@ -222,7 +229,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   saveButton: {
-    backgroundColor: '#ff4d4d',
+    backgroundColor: '#007bff',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -231,7 +238,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   confirmButton: {
-    backgroundColor: '#ff4d4d',
+    backgroundColor: '#007bff',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -240,7 +247,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   noButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#ff4d4d',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
