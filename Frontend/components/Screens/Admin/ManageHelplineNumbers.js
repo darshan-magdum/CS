@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, FlatList } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, FlatList, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 
@@ -13,6 +13,7 @@ export default function ManageHelplineNumbers({ navigation }) {
   const [currentHelpline, setCurrentHelpline] = useState(null);
   const [updatedName, setUpdatedName] = useState('');
   const [updatedNumber, setUpdatedNumber] = useState('');
+  const [errors, setErrors] = useState({ name: '', number: '' });
 
   useEffect(() => {
     const fetchHelplineNumbers = async () => {
@@ -32,6 +33,7 @@ export default function ManageHelplineNumbers({ navigation }) {
     setUpdatedName(helpline.name);
     setUpdatedNumber(helpline.contactNo);
     setEditModalVisible(true);
+    setErrors({ name: '', number: '' }); // Clear any existing errors
   };
 
   const handleDelete = (helpline) => {
@@ -39,18 +41,42 @@ export default function ManageHelplineNumbers({ navigation }) {
     setDeleteModalVisible(true);
   };
 
-  const confirmDelete = () => {
-    // Implement your delete logic here (e.g., API call)
-    alert(`Helpline number ${currentHelpline.name} deleted successfully`);
-    navigation.goBack(); // Navigate back after deletion
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/api/HelplineNumbers/DeleteHelplineNumber/${currentHelpline._id}`);
+      setHelplineData(prev => prev.filter(item => item._id !== currentHelpline._id));
+      Alert.alert('Success', 'Helpline number deleted successfully');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error deleting helpline number:', error);
+      Alert.alert('Error', 'Failed to delete helpline number. Please try again.');
+    }
   };
 
-  const handleSave = () => {
-    // Simulate saving the updated name and number
-    const updatedHelpline = { ...currentHelpline, name: updatedName, contactNo: updatedNumber };
-    setHelplineData(prev => prev.map(item => (item._id === updatedHelpline._id ? updatedHelpline : item)));
-    alert('Helpline number updated successfully');
-    setEditModalVisible(false);
+  const handleSave = async () => {
+    if (!updatedName) {
+      setErrors(prev => ({ ...prev, name: 'Helpline name is required.' }));
+      return;
+    }
+
+    if (!updatedNumber) {
+      setErrors(prev => ({ ...prev, number: 'Helpline number is required.' }));
+      return;
+    }
+
+    try {
+      const response = await axios.put(`http://localhost:3000/api/HelplineNumbers/UpdateHelplineNumber/${currentHelpline._id}`, {
+        name: updatedName,
+        contactNo: updatedNumber,
+      });
+
+      const updatedHelpline = response.data;
+      setHelplineData(prev => prev.map(item => (item._id === updatedHelpline._id ? updatedHelpline : item)));
+      Alert.alert('Success', 'Helpline number updated successfully');
+      setEditModalVisible(false);
+    } catch (error) {
+      Alert.alert(error.response.data.message);
+    }
   };
 
   const renderHelplineItem = ({ item }) => (
@@ -103,6 +129,8 @@ export default function ManageHelplineNumbers({ navigation }) {
                 placeholder="Enter helpline name"
                 placeholderTextColor="#999"
               />
+              {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
+
               <Text style={styles.label}>Helpline Number</Text>
               <TextInput
                 style={styles.textInput}
@@ -111,6 +139,8 @@ export default function ManageHelplineNumbers({ navigation }) {
                 placeholder="Enter helpline number"
                 placeholderTextColor="#999"
               />
+              {errors.number ? <Text style={styles.errorText}>{errors.number}</Text> : null}
+
               <View style={styles.modalButtonContainer}>
                 <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
                   <Text style={styles.saveButtonText}>Save</Text>
@@ -167,6 +197,7 @@ const styles = StyleSheet.create({
   },
   helplineCard: {
     margin: 16,
+    marginBottom: 0,
     padding: 16,
     backgroundColor: '#EEEEEE',
     borderRadius: 15,
@@ -293,5 +324,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginBottom: 5,
   },
 });
