@@ -29,7 +29,6 @@ export default function Login() {
     general: '',
   });
 
-
   const handleLogin = async () => {
     let valid = true;
     const newError = {
@@ -62,93 +61,43 @@ export default function Login() {
       // Attempt user login
       const userResponse = await axios.post('http://localhost:3000/api/user/Userlogin', form);
       const { token, userId, message } = userResponse.data;
-  
+
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('userId', userId);
+      // Clear any admin/vendor tokens
       await AsyncStorage.removeItem('adminToken');
       await AsyncStorage.removeItem('adminId');
-      await AsyncStorage.removeItem('vendorToken');
-      await AsyncStorage.removeItem('vendorId');
-      await AsyncStorage.removeItem('vendorMemberToken');
-      await AsyncStorage.removeItem('vendorMemberId');
-  
+
       setForm({ email: '', password: '' });
       Alert.alert(message);
       navigation.navigate('UserHome');
-      
+
     } catch (userError) {
       try {
         // Attempt admin login if user login fails
         const adminResponse = await axios.post('http://localhost:3000/api/admin/login', form);
         const { token, adminId, message } = adminResponse.data;
-  
+
         await AsyncStorage.setItem('adminToken', token);
         await AsyncStorage.setItem('adminId', adminId);
+        // Clear user tokens
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('userId');
-        await AsyncStorage.removeItem('vendorToken');
-        await AsyncStorage.removeItem('vendorId');
-        await AsyncStorage.removeItem('vendorMemberToken');
-        await AsyncStorage.removeItem('vendorMemberId');
-  
+
         setForm({ email: '', password: '' });
         Alert.alert(message);
         navigation.navigate('AdminHome');
-        
+
       } catch (adminError) {
-        try {
-          // Attempt vendor login if admin login fails
-          const vendorResponse = await axios.post('http://localhost:3000/api/vendor/login', form);
-          const { token, vendorId, vendor, message } = vendorResponse.data;
-  
-          await AsyncStorage.setItem('vendorToken', token);
-          await AsyncStorage.setItem('vendorId', vendorId);
-          await AsyncStorage.setItem('vendor', vendor);  // Storing vendor info
-          await AsyncStorage.removeItem('token');
-          await AsyncStorage.removeItem('userId');
-          await AsyncStorage.removeItem('adminToken');
-          await AsyncStorage.removeItem('adminId');
-          await AsyncStorage.removeItem('vendorMemberToken');
-          await AsyncStorage.removeItem('vendorMemberId');
-  
-          setForm({ email: '', password: '' });
-          Alert.alert(message);
-          navigation.navigate('VendorHome');
-          
-        } catch (vendorError) {
-          try {
-            // Attempt vendor employee login if vendor login fails
-            const vendorEmployeeResponse = await axios.post('http://localhost:3000/api/vendormember/login', form);
-            const { token, vendorMemberId, vendor, message } = vendorEmployeeResponse.data;
-  
-            await AsyncStorage.setItem('vendorMemberToken', token);
-            await AsyncStorage.setItem('vendorMemberId', vendorMemberId);
-            await AsyncStorage.setItem('vendor', vendor);  // Storing vendor info
-            await AsyncStorage.removeItem('token');
-            await AsyncStorage.removeItem('userId');
-            await AsyncStorage.removeItem('adminToken');
-            await AsyncStorage.removeItem('adminId');
-            await AsyncStorage.removeItem('vendorToken');
-            await AsyncStorage.removeItem('vendorId');
-  
-            setForm({ email: '', password: '' });
-            Alert.alert(message);
-            navigation.navigate('VendorEmployeeHome');
-            
-          } catch (vendorEmployeeError) {
-            setError({ ...newError, general: vendorEmployeeError.response?.data?.message || 'An error occurred' });
-          }
-        }
+        setError({ ...newError, general: adminError.response?.data?.message || 'An error occurred' });
       }
     }
   };
-  
-  
+
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
-
 
   useEffect(() => {
     const checkAsyncStorage = async () => {
