@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, Modal, TextInput, Image, TouchableOpacity } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 // Replace this with the path to your local image
@@ -13,21 +13,11 @@ const mockHelplineData = {
 
 export default function ViewHelplineNumbers({ navigation }) {
   const [editModalVisible, setEditModalVisible] = useState(false);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [updatedName, setUpdatedName] = useState(mockHelplineData.name);
   const [updatedNumber, setUpdatedNumber] = useState(mockHelplineData.number);
 
   const handleEdit = () => {
     setEditModalVisible(true);
-  };
-
-  const handleDelete = () => {
-    setDeleteModalVisible(true);
-  };
-
-  const confirmDelete = () => {
-    alert('Helpline number deleted successfully');
-    navigation.goBack(); // Navigate back after deletion
   };
 
   const handleSave = () => {
@@ -54,14 +44,6 @@ export default function ViewHelplineNumbers({ navigation }) {
               <Text style={styles.helplineName}>{mockHelplineData.name}</Text>
               <Text style={styles.helplineNumber}>{mockHelplineData.number}</Text>
             </View>
-          </View>
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-              <Text style={styles.actionButtonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-              <Text style={styles.actionButtonText}>Delete</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -92,23 +74,6 @@ export default function ViewHelplineNumbers({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.noButton} onPress={() => setEditModalVisible(false)}>
                   <Text style={styles.noButtonText}>Close</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-        {/* Delete Confirmation Modal */}
-        <Modal visible={deleteModalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Are you sure you want to delete this helpline number?</Text>
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity style={styles.confirmButton} onPress={confirmDelete}>
-                  <Text style={styles.confirmButtonText}>Yes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.noButton} onPress={() => setDeleteModalVisible(false)}>
-                  <Text style={styles.noButtonText}>No</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -170,26 +135,6 @@ const styles = StyleSheet.create({
     color: '#888',
     fontSize: 14,
   },
-  actionButtons: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  editButton: {
-    backgroundColor: '#007bff',
-    padding: 5,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  deleteButton: {
-    backgroundColor: '#ff4d4d',
-    padding: 5,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  actionButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -237,15 +182,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 5,
   },
-  confirmButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    flex: 1,
-    marginRight: 5,
-  },
   noButton: {
     backgroundColor: '#ff4d4d',
     paddingVertical: 8,
@@ -255,11 +191,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   saveButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  confirmButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',

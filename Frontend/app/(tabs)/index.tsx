@@ -35,6 +35,7 @@ export default function HomeScreen() {
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {/* Admin Navigation */}
+     
 
           <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} />
           <Stack.Screen name="ViewIncidents" component={ViewIncidents} />
@@ -50,7 +51,7 @@ export default function HomeScreen() {
           <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
           <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact}/>
           <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />
-
+          <Stack.Screen name="ViewHelplineNumbers" component={ViewHelplineNumbers} />
           <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
           <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
           <Stack.Screen name="StudentProfile" component={StudentProfile} />
