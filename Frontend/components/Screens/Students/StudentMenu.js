@@ -131,19 +131,21 @@ export default function StudentMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
+            {/* Create New Post */}
             <TouchableOpacity
-  onPress={() => navigation.navigate('StudentAddPost')} 
-  style={styles.row}>
-  <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-  <FeatherIcon color="#fff" name="file-text" size={20} />
-  </View>
-  <Text style={styles.rowLabel}>Add New Post</Text>
-  <View style={styles.rowSpacer} />
-  <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-</TouchableOpacity>
+              onPress={() => navigation.navigate("StudentAddPost")}
+              style={styles.row}
+            >
+              <View style={[styles.rowIcon, { backgroundColor: "#fe9400" }]}>
+                <FeatherIcon color="#fff" name="file-text" size={20} />
+              </View>
+              <Text style={styles.rowLabel}>Add New Post</Text>
+              <View style={styles.rowSpacer} />
+              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+            </TouchableOpacity>
 
-
-<TouchableOpacity
+            {/* View Post */}
+            <TouchableOpacity
               onPress={() => navigation.navigate("StudentViewPost")}
               style={styles.row}
             >
@@ -155,20 +157,20 @@ export default function StudentMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-
             {/* Add Emergency Contacts */}
             <TouchableOpacity
               onPress={() => navigation.navigate("StudentAddEmergencyContact")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "purple" }]}>
-              <FeatherIcon color="#fff" name="phone" size={20} />
+                <FeatherIcon color="#fff" name="phone" size={20} />
               </View>
               <Text style={styles.rowLabel}>Add Emergency Contact</Text>
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
+            {/* View Emergency Contacts */}
             <TouchableOpacity
               onPress={() => navigation.navigate("ViewEmergencyContact")}
               style={styles.row}
@@ -200,12 +202,14 @@ export default function StudentMenu() {
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "red" }]}>
-              <FeatherIcon color="#fff" name="phone" size={20} />
+                <FeatherIcon color="#fff" name="phone" size={20} />
               </View>
               <Text style={styles.rowLabel}>View Helpline Numbers</Text>
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
+
+            {/* Logout */}
 
             <TouchableOpacity onPress={handleLogout} style={styles.row}>
               <View style={[styles.rowIcon, { backgroundColor: "#8e8d91" }]}>

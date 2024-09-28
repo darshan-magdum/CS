@@ -64,9 +64,7 @@ export default function AdminMenu() {
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
       <View style={styles.container}>
         <View style={styles.profile}>
-          <TouchableOpacity
-             onPress={() => navigation.navigate("AdminHome")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate("AdminHome")}>
             <View style={styles.profileAvatarWrapper}>
               <Image alt="" source={profile} style={styles.profileAvatar} />
 
@@ -129,19 +127,23 @@ export default function AdminMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
+
+     {/* Add Article */}
             <TouchableOpacity
-  onPress={() => navigation.navigate('AddArticle')} 
-  style={styles.row}>
-  <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
-  <FeatherIcon color="#fff" name="file-text" size={20} />
-  </View>
-  <Text style={styles.rowLabel}>Add New Article</Text>
-  <View style={styles.rowSpacer} />
-  <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-</TouchableOpacity>
+              onPress={() => navigation.navigate("AddArticle")}
+              style={styles.row}
+            >
+              <View style={[styles.rowIcon, { backgroundColor: "#fe9400" }]}>
+                <FeatherIcon color="#fff" name="file-text" size={20} />
+              </View>
+              <Text style={styles.rowLabel}>Add New Article</Text>
+              <View style={styles.rowSpacer} />
+              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+            </TouchableOpacity>
 
 
-<TouchableOpacity
+     {/* Manage Article */}
+            <TouchableOpacity
               onPress={() => navigation.navigate("ManageArticle")}
               style={styles.row}
             >
@@ -153,28 +155,26 @@ export default function AdminMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-
             {/* Add Helpline Contacts */}
             <TouchableOpacity
               onPress={() => navigation.navigate("AddHelplineNumber")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "purple" }]}>
-              <FeatherIcon color="#fff" name="phone" size={20} />
+                <FeatherIcon color="#fff" name="phone" size={20} />
               </View>
               <Text style={styles.rowLabel}>Add Helpline Numbers</Text>
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-       
-       {/* Add Emergency Contacts */}
-       <TouchableOpacity
+            {/* Add Emergency Contacts */}
+            <TouchableOpacity
               onPress={() => navigation.navigate("ManageHelplineNumbers")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "blue" }]}>
-              <FeatherIcon color="#fff" name="phone" size={20} />
+                <FeatherIcon color="#fff" name="phone" size={20} />
               </View>
               <Text style={styles.rowLabel}>Manage Helpline Numbers</Text>
               <View style={styles.rowSpacer} />
@@ -194,7 +194,6 @@ export default function AdminMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-
             {/* View help Info */}
             <TouchableOpacity
               onPress={() => navigation.navigate("ViewHelpInfo")}
@@ -208,8 +207,7 @@ export default function AdminMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-
-
+   {/* Logout */}
             <TouchableOpacity onPress={handleLogout} style={styles.row}>
               <View style={[styles.rowIcon, { backgroundColor: "#8e8d91" }]}>
                 <FeatherIcon color="#fff" name="log-out" size={20} />
@@ -221,8 +219,6 @@ export default function AdminMenu() {
 
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
-
-
           </View>
         </ScrollView>
       </View>
