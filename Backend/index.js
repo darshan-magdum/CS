@@ -6,6 +6,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connection = require("./db"); // Import the database connection function
 const adminAuth = require('./Routes/adminauth'); 
+const studentAuth = require('./Routes/studentauth'); 
 const HelpLineNumbers = require('./Routes/HelpLineNumbers'); 
 
 
@@ -29,6 +30,7 @@ app.use('/uploads', express.static('uploads'));
 // Routes setup
 app.use("/api/admin", adminAuth);
 app.use("/api/HelplineNumbers", HelpLineNumbers);
+app.use("/api/Student", studentAuth);
 
 
 // Define the port for the server
