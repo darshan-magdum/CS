@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connection = require("./db"); // Import the database connection function
-// const adminAuth = require('./routes/adminauth'); // Import the admin authentication middleware
+const adminAuth = require('./Routes/adminauth'); 
 
 
 
@@ -26,7 +26,7 @@ app.use('/uploads', express.static('uploads'));
 
 
 // Routes setup
-// app.use("/api/user", authRoutes);
+app.use("/api/admin", adminAuth);
 
 
 // Define the port for the server
