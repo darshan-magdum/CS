@@ -5,6 +5,7 @@ import SplashSceenSignup from "../../components/Screens/Intro/SplashSceenSignup"
 import Signup from "../../components/Screens/Authentication/Signup";
 import Login from "../../components/Screens/Authentication/Login";
 import AdminMenu from "../../components/Screens/Admin/AdminMenu";
+import AdminHome from "../../components/Screens/Admin/AdminHome";
 import AddHelplineNumber from "../../components/Screens/Admin/AddHelplineNumber";
 import ManageHelplineNumbers from "../../components/Screens/Admin/ManageHelplineNumbers";
 import AdminProfile from "../../components/Screens/Admin/AdminProfile";
@@ -34,33 +35,44 @@ export default function HomeScreen() {
         style={styles.Container}
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+  
+
+                      {/* Authentication */}
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
+
+                      {/* info screen */}
+
+        <Stack.Screen name="InfoScreen" component={InfoScreen} />
+        <Stack.Screen name="SplashSceenSignup"component={SplashSceenSignup}/>
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+         
           {/* Admin Navigation */}
      
 
-          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} />
-          <Stack.Screen name="ViewIncidents" component={ViewIncidents} />
-          <Stack.Screen name="ManageHelplineNumbers" component={ManageHelplineNumbers} />
-          <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
-          <Stack.Screen name="ManageArticle" component={ManageArticle} />
-          <Stack.Screen name="AddArticle" component={AddArticle} />
-          <Stack.Screen name="AdminProfile" component={AdminProfile} />
+    
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
+          <Stack.Screen name="AdminProfile" component={AdminProfile} />
+          <Stack.Screen name="AddArticle" component={AddArticle} />
+          <Stack.Screen name="ManageArticle" component={ManageArticle} />
+          <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
+          <Stack.Screen name="ManageHelplineNumbers" component={ManageHelplineNumbers} />
+          <Stack.Screen name="ViewIncidents" component={ViewIncidents} />
+          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} />
+     
 
           {/* Student Navigations  */}
+          <Stack.Screen name="StudentHome" component={StudentHome} />
           <Stack.Screen name="StudentMenu" component={StudentMenu} />
-          <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
+          <Stack.Screen name="StudentProfile" component={StudentProfile} />
+          <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
+          <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
           <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact}/>
           <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />
+          <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
           <Stack.Screen name="ViewHelplineNumbers" component={ViewHelplineNumbers} />
-          <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
-          <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
-          <Stack.Screen name="StudentProfile" component={StudentProfile} />
-          <Stack.Screen name="StudentHome" component={StudentHome} />
-          <Stack.Screen name="InfoScreen" component={InfoScreen} />
-          <Stack.Screen name="SplashSceenSignup"component={SplashSceenSignup}/>
-          <Stack.Screen name="SplashScreen" component={SplashScreen} />
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="Signup" component={Signup} />
+      
         </Stack.Navigator>
       </KeyboardAvoidingView>
     </>

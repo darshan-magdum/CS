@@ -2,52 +2,48 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
-const StudentHome = () => {
-  const userPosts = [
+const AdminHome = () => {
+  const userReports = [
     {
       id: 1,
-      name: 'John Doe',
+      name: 'Alice Williams',
       date: '2024-09-20',
       image: 'https://via.placeholder.com/300',
-      description: 'Had a great day at the campus! Excited for the upcoming events!',
+      report: 'Increased security needed in parking areas.',
     },
     {
       id: 2,
-      name: 'Jane Smith',
+      name: 'Mark Lee',
       date: '2024-09-21',
       image: 'https://via.placeholder.com/300',
-      description: 'Excited for the upcoming events!',
+      report: 'Noise disturbances late at night.',
     },
     {
       id: 3,
-      name: 'Alex Johnson',
+      name: 'Sophia Green',
       date: '2024-09-22',
       image: 'https://via.placeholder.com/300',
-      description: 'Studying hard for the exams!',
+      report: 'Request for better lighting in walkways.',
     },
   ];
 
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerText}>Campus Shield</Text>
+        <Text style={styles.headerText}>Campus Shield Admin</Text>
         <TouchableOpacity style={styles.menuButton}>
           <Ionicons name="menu" size={24} color="#FF8613" />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.safetyButton}>
-        <Ionicons name="shield" size={24} color="white" style={styles.safetyIcon} />
-        <Text style={styles.safetyButtonText}>Women's Safety Alert</Text>
-      </TouchableOpacity>
-      <View style={styles.postsContainer}>
-        {userPosts.map((post) => (
-          <View key={post.id} style={styles.post}>
-            <View style={styles.postHeader}>
-              <Text style={styles.posterName}>{post.name}</Text>
-              <Text style={styles.postDate}>{post.date}</Text>
+      <View style={styles.reportsContainer}>
+        {userReports.map((report) => (
+          <View key={report.id} style={styles.report}>
+            <View style={styles.reportHeader}>
+              <Text style={styles.reporterName}>{report.name}</Text>
+              <Text style={styles.reportDate}>{report.date}</Text>
             </View>
-            <Image source={{ uri: post.image }} style={styles.postImage} />
-            <Text style={styles.postDescription}>{post.description}</Text>
+            <Image source={{ uri: report.image }} style={styles.reportImage} />
+            <Text style={styles.reportDescription}>{report.report}</Text>
           </View>
         ))}
       </View>
@@ -58,7 +54,7 @@ const StudentHome = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eaeaea',
+    backgroundColor: '#f4f4f4',
   },
   header: {
     flexDirection: 'row',
@@ -80,32 +76,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  safetyButton: {
-    margin: 16,
-    padding: 20,
-    backgroundColor: '#d5006d', // Dark pink
-    borderRadius: 25,
-    alignItems: 'center',
-    flexDirection: 'row', // Align icon and text horizontally
-    justifyContent: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  safetyIcon: {
-    marginRight: 10, // Space between icon and text
-  },
-  safetyButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  postsContainer: {
+  reportsContainer: {
     padding: 16,
   },
-  post: {
+  report: {
     marginBottom: 16,
     backgroundColor: '#ffffff',
     borderRadius: 15,
@@ -116,31 +90,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
-  postHeader: {
+  reportHeader: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#eeeeee',
   },
-  posterName: {
+  reporterName: {
     fontWeight: 'bold',
     fontSize: 18,
     color: '#333333',
   },
-  postDate: {
+  reportDate: {
     color: '#888888',
     fontSize: 12,
   },
-  postImage: {
+  reportImage: {
     width: '100%',
     height: 200,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
-  postDescription: {
+  reportDescription: {
     padding: 10,
     fontSize: 15,
     color: '#444444',
   },
 });
 
-export default StudentHome;
+export default AdminHome;
