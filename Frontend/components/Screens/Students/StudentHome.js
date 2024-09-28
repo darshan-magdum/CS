@@ -1,146 +1,215 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput } from 'react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
-const StudentHome = () => {
-  const userPosts = [
-    {
-      id: 1,
-      name: 'John Doe',
-      date: '2024-09-20',
-      image: 'https://via.placeholder.com/300',
-      description: 'Had a great day at the campus! Excited for the upcoming events!',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      date: '2024-09-21',
-      image: 'https://via.placeholder.com/300',
-      description: 'Excited for the upcoming events!',
-    },
-    {
-      id: 3,
-      name: 'Alex Johnson',
-      date: '2024-09-22',
-      image: 'https://via.placeholder.com/300',
-      description: 'Studying hard for the exams!',
-    },
-  ];
+const mockPostData = {
+  mediaType: 'Photo', // or 'Video'
+  description: 'This is a sample description for the post.',
+  name: 'John Doe',
+  date: '2024-09-20',
+  likes: 5,
+  comments: 2,
+};
+
+export default function StudentViewPost({ navigation }) {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [updatedDescription, setUpdatedDescription] = useState(mockPostData.description);
+
+  const handleEdit = () => {
+    setModalVisible(true);
+  };
+
+  const handleSave = () => {
+    mockPostData.description = updatedDescription; // Simulate saving the updated description
+    alert('Post updated successfully');
+    setModalVisible(false);
+  };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Campus Shield</Text>
-        <TouchableOpacity style={styles.menuButton}>
-          <Ionicons name="menu" size={24} color="#FF8613" />
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FeatherIcon name="chevron-left" size={24} color="#333" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>View Post</Text>
+        </View>
+
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Media Type: {mockPostData.mediaType}</Text>
+          <View style={styles.mediaContainer}>
+            {/* Replace this Text with an Image or Video component based on mediaType */}
+            <Text style={styles.mediaPlaceholder}>{mockPostData.mediaType}</Text>
+          </View>
+
+          <Text style={styles.descriptionTitle}>Description:</Text>
+          <Text style={styles.descriptionText}>{mockPostData.description}</Text>
+
+          <View style={styles.postDetails}>
+            <Text style={styles.detailText}>Posted by: {mockPostData.name}</Text>
+            <Text style={styles.detailText}>Date: {mockPostData.date}</Text>
+            <Text style={styles.detailText}>Likes: {mockPostData.likes}</Text>
+            <Text style={styles.detailText}>Comments: {mockPostData.comments}</Text>
+          </View>
+        </View>
+
+        <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
+          <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.safetyButton}>
-        <Ionicons name="shield" size={24} color="white" style={styles.safetyIcon} />
-        <Text style={styles.safetyButtonText}>Women's Safety Alert</Text>
-      </TouchableOpacity>
-      <View style={styles.postsContainer}>
-        {userPosts.map((post) => (
-          <View key={post.id} style={styles.post}>
-            <View style={styles.postHeader}>
-              <Text style={styles.posterName}>{post.name}</Text>
-              <Text style={styles.postDate}>{post.date}</Text>
-            </View>
-            <Image source={{ uri: post.image }} style={styles.postImage} />
-            <Text style={styles.postDescription}>{post.description}</Text>
+
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Description</Text>
+            <TextInput
+              style={styles.textArea}
+              value={updatedDescription}
+              onChangeText={setUpdatedDescription}
+              multiline
+              placeholder="Edit your description here"
+              placeholderTextColor="#999"
+            />
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Save</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
           </View>
-        ))}
-      </View>
-    </ScrollView>
+        </View>
+      </Modal>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#eaeaea',
+    backgroundColor: '#fff',
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FF8613',
-  },
-  headerText: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  menuButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  safetyButton: {
-    margin: 16,
-    padding: 20,
-    backgroundColor: '#d5006d', // Dark pink
-    borderRadius: 25,
-    alignItems: 'center',
-    flexDirection: 'row', // Align icon and text horizontally
-    justifyContent: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  safetyIcon: {
-    marginRight: 10, // Space between icon and text
-  },
-  safetyButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  postsContainer: {
-    padding: 16,
-  },
-  post: {
-    marginBottom: 16,
-    backgroundColor: '#ffffff',
-    borderRadius: 15,
-    overflow: 'hidden',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-  },
-  postHeader: {
-    padding: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderBottomWidth: 1,
-    borderBottomColor: '#eeeeee',
+    borderBottomColor: '#ccc',
   },
-  posterName: {
-    fontWeight: 'bold',
+  headerTitle: {
     fontSize: 18,
-    color: '#333333',
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+    flex: 1,
   },
-  postDate: {
-    color: '#888888',
-    fontSize: 12,
+  sectionContainer: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
   },
-  postImage: {
-    width: '100%',
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 15,
+  },
+  mediaContainer: {
+    backgroundColor: '#f0f0f0',
     height: 200,
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 15,
   },
-  postDescription: {
+  mediaPlaceholder: {
+    fontSize: 18,
+    color: '#777',
+  },
+  descriptionTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: 8,
+  },
+  descriptionText: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 24,
+  },
+  postDetails: {
+    marginTop: 20,
     padding: 10,
-    fontSize: 15,
-    color: '#444444',
+    borderTopWidth: 1,
+    borderTopColor: '#eee',
+  },
+  detailText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  editButton: {
+    marginHorizontal: 24,
+    backgroundColor: '#FF8613',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  editButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 24,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    fontSize: 16,
+    height: 120,
+    textAlignVertical: 'top',
+    color: '#333',
+    marginBottom: 15,
+  },
+  saveButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  closeButton: {
+    marginTop: 12,
+    backgroundColor: '#ccc',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#333',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
-
-export default StudentHome;

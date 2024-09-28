@@ -6,6 +6,9 @@ import Signup from "../../components/Screens/Authentication/Signup";
 import Login from "../../components/Screens/Authentication/Login";
 import AdminMenu from "../../components/Screens/Admin/AdminMenu";
 import StudentMenu from "../../components/Screens/Students/StudentMenu";
+import StudentAddPost from "../../components/Screens/Students/StudentAddPost";
+import StudentViewPost from "../../components/Screens/Students/StudentViewPost";
+import StudentProfile from "../../components/Screens/Students/StudentProfile";
 import StudentHome from "../../components/Screens/Students/StudentHome";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -21,11 +24,17 @@ const Stack = createNativeStackNavigator();
       >
       
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-        
+          <Stack.Screen name="StudentViewPost" component={StudentViewPost}/>
 
+        <Stack.Screen name="StudentMenu" component={StudentMenu} />
+        <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
+        
+        <Stack.Screen name="StudentProfile" component={StudentProfile} /> 
+     
+       
         <Stack.Screen name="StudentHome" component={StudentHome} />
         <Stack.Screen name="AdminMenu" component={AdminMenu} />
-        <Stack.Screen name="StudentMenu" component={StudentMenu} />
+      
        
         <Stack.Screen name="InfoScreen" component={InfoScreen} />
         <Stack.Screen
