@@ -5,6 +5,7 @@ import SplashSceenSignup from "../../components/Screens/Intro/SplashSceenSignup"
 import Signup from "../../components/Screens/Authentication/Signup";
 import Login from "../../components/Screens/Authentication/Login";
 import AdminMenu from "../../components/Screens/Admin/AdminMenu";
+import AdminProfile from "../../components/Screens/Admin/AdminProfile";
 import StudentMenu from "../../components/Screens/Students/StudentMenu";
 import ViewEmergencyContact from "../../components/Screens/Students/ViewEmergencyContact";
 import ViewHelplineNumbers from "../../components/Screens/Students/ViewHelplineNumbers";
@@ -30,6 +31,7 @@ export default function HomeScreen() {
 
 {/* Admin Navigation */}
 
+          <Stack.Screen name="AdminProfile" component={AdminProfile} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
 
           {/* Student Navigations  */}
