@@ -1,6 +1,6 @@
 require('dotenv').config({ path: '../.env' });
 const mongoose = require('mongoose');
-const AdminSignup = require('../models/AdminSignup'); // Corrected import
+const AdminSignup = require('../Models/AdminSignup'); 
 
 const mongoURL = process.env.DB;
 
@@ -10,7 +10,7 @@ mongoose.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
 
     // Create an admin instance using .env variables
     const admin = new AdminSignup({
-      companyName: process.env.COMPANY_NAME,
+      collegeName: process.env.COLLEGE_NAME,
       email: process.env.ADMIN_EMAIL,
       password: process.env.ADMIN_PASSWORD,
       contactNo: process.env.CONTACT_NO
