@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const StudentHome = () => {
+  const navigation = useNavigation();
   const userPosts = [
     {
       id: 1,
@@ -31,7 +33,7 @@ const StudentHome = () => {
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerText}>Campus Shield</Text>
-        <TouchableOpacity style={styles.menuButton}>
+        <TouchableOpacity style={styles.menuButton} onPress={() => navigation.navigate('StudentMenu')}>
           <Ionicons name="menu" size={24} color="#FF8613" />
         </TouchableOpacity>
       </View>

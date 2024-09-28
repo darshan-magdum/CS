@@ -51,7 +51,7 @@ export default function HomeScreen() {
           {/* Admin Navigation */}
      
 
-          <Stack.Screen name="AdminHome" component={AdminHome} />
+          {/* <Stack.Screen name="AdminHome" component={AdminHome} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
           <Stack.Screen name="AdminProfile" component={AdminProfile} />
           <Stack.Screen name="AddArticle" component={AddArticle} />
@@ -59,7 +59,7 @@ export default function HomeScreen() {
           <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
           <Stack.Screen name="ManageHelplineNumbers" component={ManageHelplineNumbers} />
           <Stack.Screen name="ViewIncidents" component={ViewIncidents} />
-          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} />
+          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} /> */}
      
 
           {/* Student Navigations  */}
