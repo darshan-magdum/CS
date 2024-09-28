@@ -39,19 +39,19 @@ export default function HomeScreen() {
   
 
                       {/* Authentication */}
-        {/* <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} /> */}
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} />
 
                       {/* info screen */}
 
-        {/* <Stack.Screen name="InfoScreen" component={InfoScreen} />
+        <Stack.Screen name="InfoScreen" component={InfoScreen} />
         <Stack.Screen name="SplashSceenSignup"component={SplashSceenSignup}/>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
+        <Stack.Screen name="SplashScreen" component={SplashScreen} />
          
           {/* Admin Navigation */}
      
 
-          {/* <Stack.Screen name="AdminHome" component={AdminHome} />
+          <Stack.Screen name="AdminHome" component={AdminHome} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
           <Stack.Screen name="AdminProfile" component={AdminProfile} />
           <Stack.Screen name="AddArticle" component={AddArticle} />
@@ -59,7 +59,7 @@ export default function HomeScreen() {
           <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
           <Stack.Screen name="ManageHelplineNumbers" component={ManageHelplineNumbers} />
           <Stack.Screen name="ViewIncidents" component={ViewIncidents} />
-          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} /> */}
+          <Stack.Screen name="ViewHelpInfo" component={ViewHelpInfo} />
      
 
           {/* Student Navigations  */}

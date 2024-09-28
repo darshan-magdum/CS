@@ -107,7 +107,7 @@ export default function StudentMenu() {
           <View style={styles.section}>
             {/* Home */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("AdminHome")}
+              onPress={() => navigation.navigate("StudentHome")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "#007afe" }]}>
@@ -120,7 +120,7 @@ export default function StudentMenu() {
 
             {/* Your Profile */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("AdminProfileView")}
+              onPress={() => navigation.navigate("StudentProfile")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "#32c759" }]}>
@@ -132,7 +132,7 @@ export default function StudentMenu() {
             </TouchableOpacity>
 
             <TouchableOpacity
-  onPress={() => navigation.navigate('NewPostScreen')} 
+  onPress={() => navigation.navigate('StudentAddPost')} 
   style={styles.row}>
   <View style={[styles.rowIcon, { backgroundColor: '#fe9400' }]}>
   <FeatherIcon color="#fff" name="file-text" size={20} />
@@ -144,7 +144,7 @@ export default function StudentMenu() {
 
 
 <TouchableOpacity
-              onPress={() => navigation.navigate("ViewBranches")}
+              onPress={() => navigation.navigate("StudentViewPost")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "tomato" }]}>
@@ -158,7 +158,7 @@ export default function StudentMenu() {
 
             {/* Add Emergency Contacts */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("AddEmergencyContact")}
+              onPress={() => navigation.navigate("StudentAddEmergencyContact")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "purple" }]}>
@@ -170,7 +170,7 @@ export default function StudentMenu() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate("ViewBranches")}
+              onPress={() => navigation.navigate("ViewEmergencyContact")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "tomato" }]}>
@@ -183,7 +183,7 @@ export default function StudentMenu() {
 
             {/* Add Incidents */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("VendorRegistration")}
+              onPress={() => navigation.navigate("IncidentAdd")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "#fe9400" }]}>
@@ -196,7 +196,7 @@ export default function StudentMenu() {
 
             {/* View Helpline Numbers */}
             <TouchableOpacity
-              onPress={() => navigation.navigate("ViewVendors")}
+              onPress={() => navigation.navigate("ViewHelplineNumbers")}
               style={styles.row}
             >
               <View style={[styles.rowIcon, { backgroundColor: "red" }]}>
