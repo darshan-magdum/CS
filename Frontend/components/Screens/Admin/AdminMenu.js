@@ -9,46 +9,16 @@ import {
   Switch,
   Image,
 } from "react-native";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import FeatherIcon from "react-native-vector-icons/Feather";
-import profile from "../../../assets/images/profile.jpg";
+import profile from "../../../assets/images/collgelogo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+
 
 export default function AdminMenu() {
   const navigation = useNavigation();
 
-  const [userData, setUserData] = useState(null); // State to hold user data
 
-  const fetchUserData = useCallback(async () => {
-    try {
-      const adminId = await AsyncStorage.getItem("adminId"); // Retrieve user ID from AsyncStorage
-      console.log("Fetching user details for userId:", adminId);
-      const response = await axios.get(
-        `http://localhost:3000/api/admin/${adminId}`
-      ); // Fetch user details using user ID
-      console.log("User Detailshh:", response.data);
-
-      if (response.status === 200) {
-        setUserData(response.data); // Set user data to state
-      } else {
-        console.error("Failed to fetch user details");
-      }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-      // Handle error scenarios
-    }
-  }, []); // Add empty dependency array to ensure this function is stable and does not change
-
-  useEffect(() => {
-    fetchUserData(); // Fetch user data on component mount
-  }, [fetchUserData]); // Ensure useEffect runs when fetchUserData changes
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchUserData();
-    }, [fetchUserData])
-  );
 
   const handleLogout = async () => {
     try {
@@ -79,23 +49,15 @@ export default function AdminMenu() {
           </TouchableOpacity>
 
           <View>
-            {userData && (
+      
               <Text style={styles.profileName}>
-                {userData.companyName &&
-                  userData.companyName
-                    .split(" ")
-                    .map(
-                      (word) =>
-                        word.charAt(0).toUpperCase() +
-                        word.slice(1).toLowerCase()
-                    )
-                    .join(" ")}
+             DR JJMCOE
               </Text>
-            )}
+          
 
-            {/* <Text style={styles.profileAddress}>
-              123 Maple Street. Anytown, PA 17101
-            </Text> */}
+            <Text style={styles.profileAddress}>
+             Jaysingpur
+            </Text>
           </View>
         </View>
 
@@ -245,8 +207,8 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   profileAvatar: {
-    width: 72,
-    height: 72,
+    width: 48,
+    height: 80,
     borderRadius: 9999,
   },
   profileAction: {
@@ -267,12 +229,12 @@ const styles = StyleSheet.create({
     color: "#414d63",
     textAlign: "center",
   },
-  // profileAddress: {
-  //   marginTop: 5,
-  //   fontSize: 16,
-  //   color: '#989898',
-  //   textAlign: 'center',
-  // },
+  profileAddress: {
+    marginTop: 5,
+    fontSize: 16,
+    color: '#989898',
+    textAlign: 'center',
+  },
   /** Section */
   section: {
     paddingHorizontal: 24,
