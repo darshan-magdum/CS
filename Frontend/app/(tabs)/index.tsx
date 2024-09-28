@@ -27,35 +27,24 @@ export default function HomeScreen() {
         style={styles.Container}
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-        
-        <Stack.Screen name="StudentMenu" component={StudentMenu} />
-        <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
-        <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact} />
 
-        <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />        
-        <Stack.Screen name="ViewHelplineNumbers" component={ViewHelplineNumbers} />
+{/* Admin Navigation */}
 
-  
-   
-
-          <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
-
-          <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
-       
-      
-
-          <Stack.Screen name="StudentProfile" component={StudentProfile} />
-
-          <Stack.Screen name="StudentHome" component={StudentHome} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
 
+          {/* Student Navigations  */}
+          <Stack.Screen name="StudentMenu" component={StudentMenu} />
+          <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
+          <Stack.Screen name="StudentAddEmergencyContact"  component={StudentAddEmergencyContact}/>
+          <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />
+          <Stack.Screen  name="ViewHelplineNumbers"component={ViewHelplineNumbers}/>
+          <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
+          <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
+          <Stack.Screen name="StudentProfile" component={StudentProfile} />
+          <Stack.Screen name="StudentHome" component={StudentHome} />
           <Stack.Screen name="InfoScreen" component={InfoScreen} />
-          <Stack.Screen
-            name="SplashSceenSignup"
-            component={SplashSceenSignup}
-          />
+          <Stack.Screen name="SplashSceenSignup" component={SplashSceenSignup}/>
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
-
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Signup" component={Signup} />
         </Stack.Navigator>
