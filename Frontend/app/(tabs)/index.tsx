@@ -39,14 +39,15 @@ export default function HomeScreen() {
   
 
                       {/* Authentication */}
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Signup" component={Signup} />
+        {/* <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={Signup} /> */}
 
                       {/* info screen */}
 
+                      {/* <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
         <Stack.Screen name="InfoScreen" component={InfoScreen} />
         <Stack.Screen name="SplashSceenSignup"component={SplashSceenSignup}/>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
+      
          
           {/* Admin Navigation */}
      
