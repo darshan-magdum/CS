@@ -59,7 +59,7 @@ export default function Login() {
   
     try {
       // Attempt user login
-      const userResponse = await axios.post('http://localhost:3000/api/user/Userlogin', form);
+      const userResponse = await axios.post('http://localhost:3000/api/student/Userlogin', form);
       const { token, userId, message } = userResponse.data;
 
       await AsyncStorage.setItem('token', token);
@@ -70,7 +70,7 @@ export default function Login() {
 
       setForm({ email: '', password: '' });
       Alert.alert(message);
-      navigation.navigate('UserHome');
+      navigation.navigate('StudentHome');
 
     } catch (userError) {
       try {
