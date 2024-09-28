@@ -9,9 +9,11 @@ import StudentMenu from "../../components/Screens/Students/StudentMenu";
 import ViewEmergencyContact from "../../components/Screens/Students/ViewEmergencyContact";
 import ViewHelplineNumbers from "../../components/Screens/Students/ViewHelplineNumbers";
 import StudentAddPost from "../../components/Screens/Students/StudentAddPost";
+import IncidentAdd from "../../components/Screens/Students/IncidentAdd";
 import StudentViewPost from "../../components/Screens/Students/StudentViewPost";
 import StudentProfile from "../../components/Screens/Students/StudentProfile";
 import StudentHome from "../../components/Screens/Students/StudentHome";
+import StudentAddEmergencyContact from "../../components/Screens/Students/StudentAddEmergencyContact";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
@@ -26,7 +28,8 @@ export default function HomeScreen() {
       >
         <Stack.Navigator screenOptions={{ headerShown: false }}>
         
-
+        <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
+        <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact} />
 
         <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />        
         <Stack.Screen name="ViewHelplineNumbers" component={ViewHelplineNumbers} />
@@ -37,6 +40,8 @@ export default function HomeScreen() {
           <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
 
           <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
+       
+      
 
           <Stack.Screen name="StudentProfile" component={StudentProfile} />
 
