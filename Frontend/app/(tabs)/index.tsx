@@ -5,6 +5,8 @@ import SplashSceenSignup from "../../components/Screens/Intro/SplashSceenSignup"
 import Signup from "../../components/Screens/Authentication/Signup";
 import Login from "../../components/Screens/Authentication/Login";
 import AdminMenu from "../../components/Screens/Admin/AdminMenu";
+import AddHelplineNumber from "../../components/Screens/Admin/AddHelplineNumber";
+import ManageHelplineNumbers from "../../components/Screens/Admin/ManageHelplineNumbers";
 import AdminProfile from "../../components/Screens/Admin/AdminProfile";
 import AddArticle from "../../components/Screens/Admin/AddArticle";
 import ManageArticle from "../../components/Screens/Admin/ManageArticle";
@@ -33,10 +35,15 @@ export default function HomeScreen() {
 
 {/* Admin Navigation */}
 
+
+<Stack.Screen  name="ManageHelplineNumbers"component={ManageHelplineNumbers}/>
+
+<Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
 <Stack.Screen name="ManageArticle" component={ManageArticle} />
           <Stack.Screen name="AddArticle" component={AddArticle} />
           <Stack.Screen name="AdminProfile" component={AdminProfile} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
+          
      
 
           {/* Student Navigations  */}
@@ -44,7 +51,7 @@ export default function HomeScreen() {
           <Stack.Screen name="IncidentAdd" component={IncidentAdd} />
           <Stack.Screen name="StudentAddEmergencyContact"  component={StudentAddEmergencyContact}/>
           <Stack.Screen name="ViewEmergencyContact" component={ViewEmergencyContact} />
-          <Stack.Screen  name="ViewHelplineNumbers"component={ViewHelplineNumbers}/>
+         
           <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
           <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
           <Stack.Screen name="StudentProfile" component={StudentProfile} />
