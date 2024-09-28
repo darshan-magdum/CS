@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Helpline = require('../Models/AdminAuthSchema');
+const Helpline = require('../Models/AddHelplineNumbers');
 
 // Create a new helpline number
 router.post('/addnewNumber', async (req, res) => {
