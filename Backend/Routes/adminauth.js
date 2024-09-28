@@ -17,7 +17,7 @@ const loginSchema = Joi.object({
 
 // Validation schema for updating admin details using Joi
 const updateSchema = Joi.object({
-  companyName: Joi.string().required().label('Company Name'),
+  collegeName: Joi.string().required().label('College Name'),
   contactNo: Joi.string().required().label('Contact Number'),
   newPassword: Joi.string().optional().label('New Password'),
 });
@@ -80,7 +80,7 @@ router.get('/:id', async (req, res) => {
     // Return admin details (excluding password)
     res.status(200).send({
       adminId: admin._id,
-      companyName: admin.companyName,
+      collegeName: admin.collegeName,
       email: admin.email,
       contactNo: admin.contactNo,
     });
@@ -97,10 +97,10 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const adminId = req.params.id;
-    const { companyName, contactNo } = req.body;
+    const { collegeName, contactNo } = req.body;
 
     // Validate request body using Joi
-    const { error } = updateSchema.validate({ companyName, contactNo });
+    const { error } = updateSchema.validate({ collegeName, contactNo });
     if (error) {
       return res.status(400).send({ message: error.details[0].message });
     }
@@ -112,7 +112,7 @@ router.put('/:id', async (req, res) => {
     }
 
     // Update admin details
-    admin.companyName = companyName;
+    admin.collegeName = collegeName;
     admin.contactNo = contactNo;
 
     // Save the updated admin details
@@ -121,7 +121,7 @@ router.put('/:id', async (req, res) => {
     // Return updated admin details
     res.status(200).send({
       adminId: admin._id,
-      companyName: admin.companyName,
+      collegeName: admin.collegeName,
       email: admin.email,
       contactNo: admin.contactNo,
       message: 'Admin details updated successfully',

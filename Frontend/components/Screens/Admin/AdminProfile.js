@@ -43,8 +43,8 @@ export default function AdminProfile({ navigation }) {
         {adminData ? (
           <View style={styles.detailsContainer}>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>Name</Text>
-              <Text style={styles.detailText}>{adminData.name}</Text>
+              <Text style={styles.detailLabel}>Collge Name</Text>
+              <Text style={styles.detailText}>{adminData.collegeName}</Text>
             </View>
 
             <View style={styles.detailItem}>
@@ -54,7 +54,7 @@ export default function AdminProfile({ navigation }) {
 
             <View style={styles.detailItem}>
               <Text style={styles.detailLabel}>Contact Number</Text>
-              <Text style={styles.detailText}>{adminData.contactNumber}</Text>
+              <Text style={styles.detailText}>{adminData.contactNo}</Text>
             </View>
           </View>
         ) : (
