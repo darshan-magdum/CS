@@ -49,11 +49,13 @@ export default function AddArticle({ navigation }) {
           <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Title</Text>
               <TextInput
-                style={styles.textArea}
+                style={styles.textInput}
                 value={form.description}
                 placeholder="Enter your article Title"
                 placeholderTextColor="#999"
               />
+
+
             </View>
 
             <View style={styles.inputContainer}>
@@ -205,6 +207,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    fontSize: 16,
+    color: '#333',
+},
   closeButton: {
     marginTop: 24,
     backgroundColor: '#007bff',
