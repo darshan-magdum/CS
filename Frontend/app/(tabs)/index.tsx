@@ -15,6 +15,7 @@ import ViewEmergencyContact from "../../components/Screens/Students/ViewEmergenc
 import ViewHelplineNumbers from "../../components/Screens/Students/ViewHelplineNumbers";
 import StudentAddPost from "../../components/Screens/Students/StudentAddPost";
 import IncidentAdd from "../../components/Screens/Students/IncidentAdd";
+import ViewIncidents from "../../components/Screens/Admin/ViewIncidents";
 import StudentViewPost from "../../components/Screens/Students/StudentViewPost";
 import StudentProfile from "../../components/Screens/Students/StudentProfile";
 import StudentHome from "../../components/Screens/Students/StudentHome";
@@ -36,6 +37,7 @@ export default function HomeScreen() {
 {/* Admin Navigation */}
 
 
+<Stack.Screen  name="ViewIncidents"component={ViewIncidents}/>
 <Stack.Screen  name="ManageHelplineNumbers"component={ManageHelplineNumbers}/>
 
 <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />
