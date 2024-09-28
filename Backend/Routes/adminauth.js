@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const { jwtkey } = require('../keys');
 
-const AdminSignup = require('../models/AdminSignup');
+const AdminSignup = require('../Models/AdminAuthSchema');
 
 const mongoose = require('mongoose');
 
