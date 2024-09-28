@@ -49,7 +49,7 @@ const SplashScreenSignup = () => {
         
         console.log('Fetching user details for userId:', userId)
         // Fetch user details using the retrieved userId
-        const response = await axios.get(`http://localhost:3000/api/user/${userId}`);
+        const response = await axios.get(`http://localhost:3000/api/Student/${userId}`);
         console.log('User Details:', response.data);
         
         // Navigate to UserHome screen or perform further actions
@@ -74,7 +74,7 @@ const SplashScreenSignup = () => {
       end={{ x: 1, y: 0 }}
       style={styles.container}
     >
-      <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>Welcome Aryan</Animated.Text>
+      <Animated.Text style={[styles.title, { opacity: fadeAnim }]}>Welcome {userName}</Animated.Text>
       <Animated.Text style={[styles.subtitle, { opacity: fadeAnim }]}>
         Getting ready for you
       </Animated.Text>
