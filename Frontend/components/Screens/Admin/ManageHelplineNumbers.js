@@ -1,41 +1,77 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, FlatList } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import axios from 'axios';
 
 // Replace this with the path to your local image
 const policeImage = require('../../../assets/images/police.png');
 
-const mockHelplineData = {
-  id: 1,
-  name: 'Local Police',
-  number: '911',
-};
-
 export default function ManageHelplineNumbers({ navigation }) {
+  const [helplineData, setHelplineData] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [updatedName, setUpdatedName] = useState(mockHelplineData.name);
-  const [updatedNumber, setUpdatedNumber] = useState(mockHelplineData.number);
+  const [currentHelpline, setCurrentHelpline] = useState(null);
+  const [updatedName, setUpdatedName] = useState('');
+  const [updatedNumber, setUpdatedNumber] = useState('');
 
-  const handleEdit = () => {
+  useEffect(() => {
+    const fetchHelplineNumbers = async () => {
+      try {
+        const response = await axios.get('http://localhost:3000/api/HelplineNumbers/getallHelplineNumbers');
+        setHelplineData(response.data);
+      } catch (error) {
+        console.error('Error fetching helpline numbers:', error);
+      }
+    };
+
+    fetchHelplineNumbers();
+  }, []);
+
+  const handleEdit = (helpline) => {
+    setCurrentHelpline(helpline);
+    setUpdatedName(helpline.name);
+    setUpdatedNumber(helpline.contactNo);
     setEditModalVisible(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (helpline) => {
+    setCurrentHelpline(helpline);
     setDeleteModalVisible(true);
   };
 
   const confirmDelete = () => {
-    alert('Helpline number deleted successfully');
+    // Implement your delete logic here (e.g., API call)
+    alert(`Helpline number ${currentHelpline.name} deleted successfully`);
     navigation.goBack(); // Navigate back after deletion
   };
 
   const handleSave = () => {
-    mockHelplineData.name = updatedName; // Simulate saving the updated name
-    mockHelplineData.number = updatedNumber; // Simulate saving the updated number
+    // Simulate saving the updated name and number
+    const updatedHelpline = { ...currentHelpline, name: updatedName, contactNo: updatedNumber };
+    setHelplineData(prev => prev.map(item => (item._id === updatedHelpline._id ? updatedHelpline : item)));
     alert('Helpline number updated successfully');
     setEditModalVisible(false);
   };
+
+  const renderHelplineItem = ({ item }) => (
+    <View style={styles.helplineCard}>
+      <View style={styles.helplineHeader}>
+        <Image source={policeImage} style={styles.icon} />
+        <View>
+          <Text style={styles.helplineName}>{item.name}</Text>
+          <Text style={styles.helplineNumber}>{item.contactNo}</Text>
+        </View>
+      </View>
+      <View style={styles.actionButtons}>
+        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
+          <Text style={styles.actionButtonText}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item)}>
+          <Text style={styles.actionButtonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -47,23 +83,12 @@ export default function ManageHelplineNumbers({ navigation }) {
           <Text style={styles.headerTitle}>View Helpline Numbers</Text>
         </View>
 
-        <View style={styles.helplineCard}>
-          <View style={styles.helplineHeader}>
-            <Image source={policeImage} style={styles.icon} />
-            <View>
-              <Text style={styles.helplineName}>{mockHelplineData.name}</Text>
-              <Text style={styles.helplineNumber}>{mockHelplineData.number}</Text>
-            </View>
-          </View>
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-              <Text style={styles.actionButtonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-              <Text style={styles.actionButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <FlatList
+          data={helplineData}
+          renderItem={renderHelplineItem}
+          keyExtractor={item => item._id}
+          contentContainerStyle={{ paddingBottom: 20 }}
+        />
 
         {/* Edit Modal */}
         <Modal visible={editModalVisible} animationType="slide" transparent={true}>
