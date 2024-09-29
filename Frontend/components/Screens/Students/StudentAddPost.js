@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, ScrollView, Modal, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
@@ -9,35 +9,29 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 export default function StudentAddPost({ navigation }) {
   const [form, setForm] = useState({
     description: '',
-    postImage: null, 
-    studentID: '', 
+    postImage: null,
+    studentID: '',
   });
 
-  const [userData, setUserData] = useState(null); // State to hold user data
+  const [userData, setUserData] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [fullSizeImage, setFullSizeImage] = useState('');
 
   const fetchUserData = useCallback(async () => {
     try {
-      const userId = await AsyncStorage.getItem("userId"); // Retrieve user ID from AsyncStorage
-      console.log("Fetching user details for userId:", userId);
-      const response = await axios.get(
-        `http://localhost:3000/api/student/${userId}`
-      ); // Fetch user details using user ID
-      console.log("User Detailshh:", response.data);
-
+      const userId = await AsyncStorage.getItem("userId");
+      const response = await axios.get(`http://localhost:3000/api/student/${userId}`);
       if (response.status === 200) {
-        setUserData(response.data); // Set user data to state
-      } else {
-        console.error("Failed to fetch user details");
+        setUserData(response.data);
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
-      // Handle error scenarios
     }
-  }, []); // Add empty dependency array to ensure this function is stable and does not change
+  }, []);
 
   useEffect(() => {
-    fetchUserData(); // Fetch user data on component mount
-  }, [fetchUserData]); // Ensure useEffect runs when fetchUserData changes
+    fetchUserData();
+  }, [fetchUserData]);
 
   useFocusEffect(
     useCallback(() => {
@@ -54,78 +48,50 @@ export default function StudentAddPost({ navigation }) {
     fetchStudentId();
   }, []);
 
-  const [errors, setErrors] = useState({
-    description: '',
-    postImage: '', 
-  });
-
-  const handleChangeDescription = (description) => {
-    setForm({ ...form, description });
-    setErrors({ ...errors, description: description.trim() ? '' : 'Please enter Description' });
-  };
-
   const handleImagePick = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
+      allowsEditing: false,
       quality: 1,
     });
 
     if (!result.canceled) {
-      setForm({ ...form, postImage: result.assets[0] }); 
-      setErrors({ ...errors, postImage: '' }); 
+      setForm({ ...form, postImage: result.assets[0] });
     }
   };
 
   const handleSubmit = async () => {
     try {
       const { description, postImage, studentID } = form;
-  
-      let formValid = true;
-      const newErrors = {
-        description: description.trim() ? '' : 'Please enter Description',
-        postImage: postImage ? '' : 'Please select an image',
-      };
-  
-      setErrors(newErrors);
-  
-      if (Object.values(newErrors).some(error => error !== '')) {
-        formValid = false;
-      }
-  
-      if (!formValid) {
-        return;
-      }
-  
       const formData = new FormData();
       formData.append('description', description);
       formData.append('studentID', studentID);
-      
-      // Include userData.name in the payload as studentName
       if (userData) {
-        formData.append('studentName', userData.name); // Use 'studentName' as expected by the server
+        formData.append('studentName', userData.name);
       }
-  
       if (postImage) {
         const response = await fetch(postImage.uri);
         const blob = await response.blob();
         formData.append('postImage', blob, postImage.fileName || 'photo.jpg');
       }
-  
+
       const response = await axios.post('http://localhost:3000/api/UploadPosts/createnewpost', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-  
+
       Alert.alert(response.data.message);
       navigation.goBack();
     } catch (error) {
       Alert.alert('Error creating post:', error.message);
     }
   };
-  
+
+  const showFullSizeImage = (uri) => {
+    setFullSizeImage(uri);
+    setModalVisible(true);
+  };
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -138,8 +104,7 @@ export default function StudentAddPost({ navigation }) {
         </View>
 
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Create New post
-          </Text>
+          <Text style={styles.sectionTitle}>Create New Post</Text>
 
           <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
@@ -147,12 +112,11 @@ export default function StudentAddPost({ navigation }) {
               <TextInput
                 style={styles.textArea}
                 value={form.description}
-                onChangeText={handleChangeDescription}
+                onChangeText={(description) => setForm({ ...form, description })}
                 multiline
                 placeholder="Enter Description"
                 placeholderTextColor="#999"
               />
-              {errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
             </View>
 
             <View style={styles.inputContainer}>
@@ -160,15 +124,27 @@ export default function StudentAddPost({ navigation }) {
               <TouchableOpacity style={styles.photoPicker} onPress={handleImagePick}>
                 <Text style={styles.pickerText}>{form.postImage ? 'Photo Selected' : 'Pick a photo'}</Text>
               </TouchableOpacity>
-              {form.postImage && <Image source={{ uri: form.postImage.uri }} style={styles.selectedImage} />}
-              {errors.postImage ? <Text style={styles.errorText}>{errors.postImage}</Text> : null} 
+              {form.postImage && (
+                <TouchableOpacity onPress={() => showFullSizeImage(form.postImage.uri)}>
+                  <Image source={{ uri: form.postImage.uri }} style={styles.selectedImage} />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
+
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-          <Text style={styles.submitButtonText}>Submit</Text>
-        </TouchableOpacity>
+        {/* Modal for Full-Size Image */}
+        <Modal visible={modalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalContainer}>
+            <TouchableOpacity style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
+              <Image source={{ uri: fullSizeImage }} style={styles.fullSizeImage} />
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     </ScrollView>
   );
@@ -255,9 +231,20 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: '600',
   },
-  errorText: {
-    color: 'red',
-    fontSize: 14,
-    marginTop: 4,
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullSizeImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });

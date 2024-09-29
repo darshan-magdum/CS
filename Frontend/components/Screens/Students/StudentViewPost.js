@@ -1,110 +1,187 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, Alert, ScrollView } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-
-const mockPostData = {
-  id: 1,
-  name: 'John Doe',
-  date: '2024-09-20',
-  image: 'https://via.placeholder.com/300',
-  description: 'This is a sample description for the post.',
-};
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StudentViewPost({ navigation }) {
+  const [posts, setPosts] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [updatedDescription, setUpdatedDescription] = useState(mockPostData.description);
+  const [updatedDescription, setUpdatedDescription] = useState('');
+  const [currentPost, setCurrentPost] = useState(null);
+  const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [fullSizeImage, setFullSizeImage] = useState('');
 
-  const handleEdit = () => {
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const userId = await AsyncStorage.getItem("userId");
+      if (userId) {
+        const response = await fetch(`http://localhost:3000/api/UploadPosts/getbystudent/${userId}`);
+        const data = await response.json();
+        const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setPosts(sortedPosts);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  const handleEdit = (post) => {
+    setCurrentPost(post);
+    setUpdatedDescription(post.description);
     setEditModalVisible(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (post) => {
+    setCurrentPost(post);
     setDeleteModalVisible(true);
   };
 
   const confirmDelete = () => {
-    alert('Post deleted successfully');
-    navigation.goBack(); // Navigate back after deletion
+    // Add your deletion logic here (API call)
+    Alert.alert('Post deleted successfully');
+    setDeleteModalVisible(false);
+    // Optionally, refresh the posts
   };
 
   const handleSave = () => {
-    mockPostData.description = updatedDescription; // Simulate saving the updated description
-    alert('Post updated successfully');
-    setEditModalVisible(false);
+    // Add your update logic here (API call)
+    if (currentPost) {
+      const updatedPost = { ...currentPost, description: updatedDescription };
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post._id === updatedPost._id ? updatedPost : post
+        )
+      );
+      Alert.alert('Post updated successfully');
+      setEditModalVisible(false);
+    }
+  };
+
+  const showFullSizeImage = (uri) => {
+    setFullSizeImage(uri);
+    setImageModalVisible(true);
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FeatherIcon name="chevron-left" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>View Post</Text>
-        </View>
-
-        <View style={styles.post}>
-          <View style={styles.postHeader}>
-            <View>
-              <Text style={styles.posterName}>{mockPostData.name}</Text>
-              <Text style={styles.postDate}>{mockPostData.date}</Text>
-            </View>
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-                <Text style={styles.actionButtonText}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-                <Text style={styles.actionButtonText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <FeatherIcon name="chevron-left" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>View Posts</Text>
           </View>
-          <Image source={{ uri: mockPostData.image }} style={styles.postImage} />
-          <Text style={styles.postDescription}>{mockPostData.description}</Text>
-        </View>
 
-        {/* Edit Modal */}
-        <Modal visible={editModalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Edit Description</Text>
-              <TextInput
-                style={styles.textArea}
-                value={updatedDescription}
-                onChangeText={setUpdatedDescription}
-                multiline
-                placeholder="Edit your description here"
-                placeholderTextColor="#999"
-              />
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                  <Text style={styles.saveButtonText}>Save</Text>
+          {posts.map((post) => (
+            <View key={post._id} style={styles.post}>
+              <View style={styles.postHeader}>
+                <View>
+                  <Text style={styles.posterName}>{post.studentName}</Text>
+                  <Text style={styles.postDate}>
+                    {new Date(post.createdAt).toLocaleString()}
+                  </Text>
+                </View>
+                <View style={styles.actionButtons}>
+                  <TouchableOpacity
+                    style={styles.editButton}
+                    onPress={() => handleEdit(post)}
+                  >
+                    <Text style={styles.actionButtonText}>Edit</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDelete(post)}
+                  >
+                    <Text style={styles.actionButtonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {(post.media && Array.isArray(post.media) && post.media.length > 0) ? (
+                post.media.map((image, index) => (
+                  <TouchableOpacity key={index} onPress={() => showFullSizeImage(`http://localhost:3000/${image.replace(/\\/g, '/')}`)}>
+                    <Image
+                      source={{ uri: `http://localhost:3000/${image.replace(/\\/g, '/')}` }}
+                      style={styles.postImage}
+                      onError={() => console.log('Failed to load image')}
+                    />
+                  </TouchableOpacity>
+                ))
+              ) : post.postImage ? (
+                <TouchableOpacity onPress={() => showFullSizeImage(`http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`)}>
+                  <Image
+                    source={{ uri: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}` }}
+                    style={styles.postImage}
+                    onError={() => console.log('Failed to load image')}
+                  />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.noButton} onPress={() => setEditModalVisible(false)}>
-                  <Text style={styles.noButtonText}>Close</Text>
-                </TouchableOpacity>
+              ) : null}
+
+              <Text style={styles.postDescription}>{post.description}</Text>
+            </View>
+          ))}
+
+          {/* Edit Modal */}
+          <Modal visible={editModalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Edit Description</Text>
+                <TextInput
+                  style={styles.textArea}
+                  value={updatedDescription}
+                  onChangeText={setUpdatedDescription}
+                  multiline
+                  placeholder="Edit your description here"
+                  placeholderTextColor="#999"
+                />
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.noButton}
+                    onPress={() => setEditModalVisible(false)}
+                  >
+                    <Text style={styles.noButtonText}>Close</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        {/* Delete Confirmation Modal */}
-        <Modal visible={deleteModalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Are you sure you want to delete this post?</Text>
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity style={styles.confirmButton} onPress={confirmDelete}>
-                  <Text style={styles.confirmButtonText}>Yes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.noButton} onPress={() => setDeleteModalVisible(false)}>
-                  <Text style={styles.noButtonText}>No</Text>
-                </TouchableOpacity>
+          {/* Delete Confirmation Modal */}
+          <Modal visible={deleteModalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Are you sure you want to delete this post?</Text>
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity style={styles.confirmButton} onPress={confirmDelete}>
+                    <Text style={styles.confirmButtonText}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.noButton}
+                    onPress={() => setDeleteModalVisible(false)}
+                  >
+                    <Text style={styles.noButtonText}>No</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
+          </Modal>
+
+          {/* Full-Size Image Modal */}
+          <Modal visible={imageModalVisible} transparent={true} animationType="slide">
+            <View style={styles.modalContainer}>
+              <TouchableOpacity style={styles.modalOverlay} onPress={() => setImageModalVisible(false)}>
+                <Image source={{ uri: fullSizeImage }} style={styles.fullSizeImage} />
+              </TouchableOpacity>
+            </View>
+          </Modal>
+
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -223,43 +300,45 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: '#ff4d4d',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    padding: 10,
+    borderRadius: 5,
     flex: 1,
     marginRight: 5,
   },
   confirmButton: {
-    backgroundColor: '#ff4d4d',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
     flex: 1,
     marginRight: 5,
   },
   noButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
     flex: 1,
+    marginLeft: 5,
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    textAlign: 'center',
   },
   confirmButtonText: {
     color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    textAlign: 'center',
   },
   noButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#333',
+    textAlign: 'center',
+  },
+  fullSizeImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
