@@ -22,10 +22,10 @@ export default function StudentMenu() {
 
   const fetchUserData = useCallback(async () => {
     try {
-      const adminId = await AsyncStorage.getItem("adminId"); // Retrieve user ID from AsyncStorage
-      console.log("Fetching user details for userId:", adminId);
+      const userId = await AsyncStorage.getItem("userId"); // Retrieve user ID from AsyncStorage
+      console.log("Fetching user details for userId:", userId);
       const response = await axios.get(
-        `http://localhost:3000/api/admin/${adminId}`
+        `http://localhost:3000/api/student/${userId}`
       ); // Fetch user details using user ID
       console.log("User Detailshh:", response.data);
 
@@ -85,8 +85,8 @@ export default function StudentMenu() {
           <View>
             {userData && (
               <Text style={styles.profileName}>
-                {userData.companyName &&
-                  userData.companyName
+                {userData.name &&
+                  userData.name
                     .split(" ")
                     .map(
                       (word) =>
