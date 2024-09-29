@@ -1,40 +1,106 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, Alert, FlatList } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const emergenycontacts = require('../../../assets/images/emergenycontacts.png');
-
-const mockContactData = {
-  id: 1,
-  name: 'Jane Smith',
-  mobile: '123-456-7890',
-};
+const emergencyContactsImage = require('../../../assets/images/emergenycontacts.png');
 
 export default function ViewEmergencyContact({ navigation }) {
+  const [contacts, setContacts] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [updatedName, setUpdatedName] = useState(mockContactData.name);
-  const [updatedMobile, setUpdatedMobile] = useState(mockContactData.mobile);
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [updatedName, setUpdatedName] = useState('');
+  const [updatedMobile, setUpdatedMobile] = useState('');
+  const [validationError, setValidationError] = useState('');
 
-  const handleEdit = () => {
+  useEffect(() => {
+    const fetchEmergencyContacts = async () => {
+      try {
+        const studentId = await AsyncStorage.getItem('userId');
+        const response = await axios.get(`http://localhost:3000/api/EmergencyNumbers/getEmergencyContactsByStudentId/${studentId}`);
+        setContacts(response.data);
+      } catch (error) {
+        Alert.alert('Error', 'Could not fetch contact data.');
+      }
+    };
+
+    fetchEmergencyContacts();
+  }, []);
+
+  const handleEdit = (contact) => {
+    setSelectedContact(contact);
+    setUpdatedName(contact.name);
+    setUpdatedMobile(contact.contactNo);
     setEditModalVisible(true);
+    setValidationError('');
   };
 
-  const handleDelete = () => {
+  const handleDelete = (contact) => {
+    setSelectedContact(contact);
     setDeleteModalVisible(true);
   };
 
-  const confirmDelete = () => {
-    alert('Contact deleted successfully');
-    navigation.goBack(); // Navigate back after deletion
+  const confirmDelete = async () => {
+    try {
+      await axios.delete(`http://localhost:3000/api/EmergencyNumbers/deleteEmergencyContact/${selectedContact._id}`);
+      setContacts(contacts.filter(c => c._id !== selectedContact._id));
+      Alert.alert('Success', 'Contact deleted successfully');
+      setDeleteModalVisible(false);
+    } catch (error) {
+      Alert.alert('Error', 'Could not delete contact');
+    }
   };
 
-  const handleSave = () => {
-    mockContactData.name = updatedName; // Simulate saving the updated name
-    mockContactData.mobile = updatedMobile; // Simulate saving the updated mobile number
-    alert('Contact updated successfully');
-    setEditModalVisible(false);
+  const handleSave = async () => {
+    setValidationError('');
+    
+    if (!updatedName.trim() || !updatedMobile.trim()) {
+      setValidationError('Both fields are required.');
+      return;
+    }
+
+    try {
+      const response = await axios.put(`http://localhost:3000/api/EmergencyNumbers/updateEmergencyContact/${selectedContact._id}`, {
+        name: updatedName,
+        contactNo: updatedMobile,
+        studentId: selectedContact.studentId,
+      });
+      const updatedContacts = contacts.map(contact =>
+        contact._id === selectedContact._id ? response.data : contact
+      );
+      setContacts(updatedContacts);
+      Alert.alert('Success', 'Contact updated successfully');
+      setEditModalVisible(false);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        Alert.alert('Validation Error', error.response.data.message);
+      } else {
+        Alert.alert('Error', 'Could not update contact');
+      }
+    }
   };
+
+  const renderContact = ({ item }) => (
+    <View style={styles.contactCard}>
+      <View style={styles.contactHeader}>
+        <Image source={emergencyContactsImage} style={styles.icon} />
+        <View>
+          <Text style={styles.contactName}>{item.name}</Text>
+          <Text style={styles.contactMobile}>{item.contactNo}</Text>
+        </View>
+      </View>
+      <View style={styles.actionButtons}>
+        <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(item)}>
+          <Text style={styles.actionButtonText}>Edit</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item)}>
+          <Text style={styles.actionButtonText}>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -43,32 +109,26 @@ export default function ViewEmergencyContact({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FeatherIcon name="chevron-left" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>View Emergency Contact</Text>
+          <Text style={styles.headerTitle}>View Emergency Contacts</Text>
         </View>
 
-        <View style={styles.contactCard}>
-          <View style={styles.contactHeader}>
-            <Image source={emergenycontacts} style={styles.icon} />
-            <View>
-              <Text style={styles.contactName}>{mockContactData.name}</Text>
-              <Text style={styles.contactMobile}>{mockContactData.mobile}</Text>
-            </View>
-          </View>
-          <View style={styles.actionButtons}>
-            <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-              <Text style={styles.actionButtonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-              <Text style={styles.actionButtonText}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        {contacts.length === 0 ? (
+          <Text style={styles.noContactsMessage}>No Emergency Contacts</Text>
+        ) : (
+          <FlatList
+            data={contacts}
+            renderItem={renderContact}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={{ paddingBottom: 100 }}
+          />
+        )}
 
         {/* Edit Modal */}
         <Modal visible={editModalVisible} animationType="slide" transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <Text style={styles.modalTitle}>Edit Emergency Contact</Text>
+              {validationError ? <Text style={styles.validationError}>{validationError}</Text> : null}
               <Text style={styles.label}>Contact Name</Text>
               <TextInput
                 style={styles.textInput}
@@ -139,6 +199,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
   },
+  noContactsMessage: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#888',
+    marginTop: 20,
+  },
   contactCard: {
     margin: 16,
     padding: 16,
@@ -206,6 +272,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 12,
     textAlign: 'center',
+  },
+  validationError: {
+    color: 'red',
+    marginBottom: 10,
   },
   label: {
     fontSize: 16,
