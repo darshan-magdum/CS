@@ -22,7 +22,7 @@ export default function ViewEmergencyContact({ navigation }) {
         const response = await axios.get(`http://192.168.0.113:3000/api/EmergencyNumbers/getEmergencyContactsByStudentId/${studentId}`);
         setContacts(response.data);
       } catch (error) {
-        Alert.alert('Error', 'Could not fetch contact data.');
+//try data
       }
     };
 

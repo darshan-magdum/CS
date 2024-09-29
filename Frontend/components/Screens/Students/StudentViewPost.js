@@ -63,18 +63,36 @@ export default function StudentViewPost({ navigation }) {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (currentPost) {
-      const updatedPost = { ...currentPost, description: updatedDescription };
-      setPosts((prevPosts) =>
-        prevPosts.map((post) =>
-          post._id === updatedPost._id ? updatedPost : post
-        )
-      );
-      Alert.alert('Post updated successfully');
-      setEditModalVisible(false);
+      // Trim whitespace from the description
+      const trimmedDescription = updatedDescription.trim();
+  
+      // Validate the description
+      if (!trimmedDescription) {
+        Alert.alert('Validation Error', 'Description cannot be empty.');
+        return;
+      }
+  
+      const updatedPost = { ...currentPost, description: trimmedDescription };
+      try {
+        await axios.put(`http://192.168.0.113:3000/api/UploadPosts/edit/${updatedPost._id}`, updatedPost);
+        setPosts((prevPosts) =>
+          prevPosts.map((post) =>
+            post._id === updatedPost._id ? updatedPost : post
+          )
+        );
+        Alert.alert('Post updated successfully');
+      } catch (error) {
+        console.error('Error updating post:', error);
+        Alert.alert('Error', 'Failed to update post. Please try again.');
+      } finally {
+        setEditModalVisible(false);
+        setCurrentPost(null);
+      }
     }
   };
+  
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
