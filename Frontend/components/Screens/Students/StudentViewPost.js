@@ -17,12 +17,25 @@ export default function StudentViewPost({ navigation }) {
     const fetchPosts = async () => {
       const userId = await AsyncStorage.getItem("userId");
       if (userId) {
-        const response = await fetch(`http://localhost:3000/api/UploadPosts/getbystudent/${userId}`);
-        const data = await response.json();
-        const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setPosts(sortedPosts);
+        try {
+          const response = await fetch(`http://localhost:3000/api/UploadPosts/getbystudent/${userId}`);
+          const data = await response.json();
+          console.log('API Response:', data); // Log the response
+    
+          if (Array.isArray(data)) {
+            const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            setPosts(sortedPosts);
+          } else {
+            console.warn('Expected an array, but got:', data);
+            setPosts([]); // Set to empty array if data is not an array
+          }
+        } catch (error) {
+          console.error('Error fetching posts:', error);
+          Alert.alert('Error', 'Failed to load posts. Please try again.');
+        }
       }
     };
+    
 
     fetchPosts();
   }, []);
@@ -49,13 +62,12 @@ export default function StudentViewPost({ navigation }) {
         Alert.alert('Error deleting post. Please try again.');
       } finally {
         setDeleteModalVisible(false);
-        setCurrentPost(null); // Clear current post after deletion
+        setCurrentPost(null);
       }
     }
   };
 
   const handleSave = () => {
-    // Add your update logic here (API call)
     if (currentPost) {
       const updatedPost = { ...currentPost, description: updatedDescription };
       setPosts((prevPosts) =>
@@ -84,54 +96,60 @@ export default function StudentViewPost({ navigation }) {
             <Text style={styles.headerTitle}>View Posts</Text>
           </View>
 
-          {posts.map((post) => (
-            <View key={post._id} style={styles.post}>
-              <View style={styles.postHeader}>
-                <View>
-                  <Text style={styles.posterName}>{post.studentName}</Text>
-                  <Text style={styles.postDate}>
-                    {new Date(post.createdAt).toLocaleString()}
-                  </Text>
+          {posts.length === 0 ? (
+            <View style={styles.noPostsContainer}>
+              <Text style={styles.noPostsText}>No posts available</Text>
+            </View>
+          ) : (
+            posts.map((post) => (
+              <View key={post._id} style={styles.post}>
+                <View style={styles.postHeader}>
+                  <View>
+                    <Text style={styles.posterName}>{post.studentName}</Text>
+                    <Text style={styles.postDate}>
+                      {new Date(post.createdAt).toLocaleString()}
+                    </Text>
+                  </View>
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity
+                      style={styles.editButton}
+                      onPress={() => handleEdit(post)}
+                    >
+                      <Text style={styles.actionButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => handleDelete(post)}
+                    >
+                      <Text style={styles.actionButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-                <View style={styles.actionButtons}>
-                  <TouchableOpacity
-                    style={styles.editButton}
-                    onPress={() => handleEdit(post)}
-                  >
-                    <Text style={styles.actionButtonText}>Edit</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => handleDelete(post)}
-                  >
-                    <Text style={styles.actionButtonText}>Delete</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
 
-              {(post.media && Array.isArray(post.media) && post.media.length > 0) ? (
-                post.media.map((image, index) => (
-                  <TouchableOpacity key={index} onPress={() => showFullSizeImage(`http://localhost:3000/${image.replace(/\\/g, '/')}`)}>
+                {(post.media && Array.isArray(post.media) && post.media.length > 0) ? (
+                  post.media.map((image, index) => (
+                    <TouchableOpacity key={index} onPress={() => showFullSizeImage(`http://localhost:3000/${image.replace(/\\/g, '/')}`)}>
+                      <Image
+                        source={{ uri: `http://localhost:3000/${image.replace(/\\/g, '/')}` }}
+                        style={styles.postImage}
+                        onError={() => console.log('Failed to load image')}
+                      />
+                    </TouchableOpacity>
+                  ))
+                ) : post.postImage ? (
+                  <TouchableOpacity onPress={() => showFullSizeImage(`http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`)}>
                     <Image
-                      source={{ uri: `http://localhost:3000/${image.replace(/\\/g, '/')}` }}
+                      source={{ uri: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}` }}
                       style={styles.postImage}
                       onError={() => console.log('Failed to load image')}
                     />
                   </TouchableOpacity>
-                ))
-              ) : post.postImage ? (
-                <TouchableOpacity onPress={() => showFullSizeImage(`http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`)}>
-                  <Image
-                    source={{ uri: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}` }}
-                    style={styles.postImage}
-                    onError={() => console.log('Failed to load image')}
-                  />
-                </TouchableOpacity>
-              ) : null}
+                ) : null}
 
-              <Text style={styles.postDescription}>{post.description}</Text>
-            </View>
-          ))}
+                <Text style={styles.postDescription}>{post.description}</Text>
+              </View>
+            ))
+          )}
 
           {/* Edit Modal */}
           <Modal visible={editModalVisible} animationType="slide" transparent={true}>
@@ -358,5 +376,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  noPostsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  noPostsText: {
+    fontSize: 18,
+    color: '#888',
   },
 });
