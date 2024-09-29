@@ -1,24 +1,16 @@
 const mongoose = require('mongoose');
-
-const uploadPostSchema = new mongoose.Schema({
-  studentID: {
-    type: String,
-    required: true,
-  },
-  description: {
-    type: String,
-    required: true,
-  },
-  media: { 
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+const foodItemSchema = new mongoose.Schema({
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    foodType: { type: String, required: true },
+    foodImage: { type: String, required: true },
+    vendor: {
+      type: String,
+      required: true,
+    }
 });
+  
+const FoodItem = mongoose.model('FoodItem', foodItemSchema);
 
-const UploadPost = mongoose.model('UploadPost', uploadPostSchema);
+module.exports = FoodItem;
 
-module.exports = UploadPost;
