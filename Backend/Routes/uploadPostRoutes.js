@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const FoodItem = require('../models/UploadPost');
+const CreatePost = require('../models/UploadPost'); // Ensure this points to the updated model
 
 // Set up storage for multer
 const storage = multer.diskStorage({
@@ -17,113 +17,107 @@ const storage = multer.diskStorage({
 // Initialize upload with storage settings
 const upload = multer({ storage: storage });
 
-// Route to create a new food item
-router.post("/createfoodtocollection", upload.single('foodImage'), async (req, res) => {
-
-
+// Route to create a new post
+router.post("/createnewpost", upload.single('postImage'), async (req, res) => {
   try {
-    const { name, description, foodType ,  vendor,} = req.body;
-    const foodImage = req.file ? req.file.path : null;
+    const { description, studentID } = req.body; // Updated fields
+    const postImage = req.file ? req.file.path : null; // Change from foodImage to postImage
 
     // Check if all fields are provided
-    if (!name || !description || !foodType || !foodImage || !vendor) {
-      return res.status(400).json({ message: 'All fields (name, description, foodType, foodImage ,  vendor) are required' });
+    if (!description || !postImage || !studentID) {
+      return res.status(400).json({ message: 'All fields (description, postImage, studentID) are required' });
     }
 
-    const newFoodItem = new FoodItem({
-      name,
+    const newPost = new CreatePost({
       description,
-      foodType,
-      foodImage,
-      vendor,
+      postImage, // Change from foodImage to postImage
+      studentID,
     });
 
-    const savedFoodItem = await newFoodItem.save();
-    res.status(201).json({ message: 'Food item added successfully', foodItem: savedFoodItem });
+    const savedPost = await newPost.save();
+    res.status(201).json({ message: 'Post added successfully', post: savedPost });
   } catch (error) {
-    console.error('Error creating food item:', error);
-    res.status(500).json({ message: "Failed to create food item", error: error.message });
+    console.error('Error creating post:', error);
+    res.status(500).json({ message: "Failed to create post", error: error.message });
   }
 });
 
-// Route to update an existing food item
-router.put("/edit/:id", upload.single('foodImage'), async (req, res) => {
+// Route to update an existing post
+router.put("/edit/:id", upload.single('postImage'), async (req, res) => {
   console.log('Received File:', req.file); // Debugging: Log file info
   console.log('Received Body:', req.body); // Debugging: Log form data
 
   try {
-    const { name, description, foodType } = req.body;
-    const foodImage = req.file ? req.file.path : req.body.foodImage; // Use new file if uploaded, else keep the old one
-    const foodItemId = req.params.id;
+    const { description, studentID } = req.body; // Updated fields
+    const postImage = req.file ? req.file.path : req.body.postImage; // Use new file if uploaded, else keep the old one
+    const postId = req.params.id;
 
     // Check if all fields are provided
-    if (!name || !description || !foodType) {
-      return res.status(400).json({ message: 'All fields (name, description, foodType) are required' });
+    if (!description || !studentID) {
+      return res.status(400).json({ message: 'All fields (description, studentID) are required' });
     }
 
-    const updatedFoodItem = await FoodItem.findByIdAndUpdate(foodItemId, {
-      name,
+    const updatedPost = await CreatePost.findByIdAndUpdate(postId, {
       description,
-      foodType,
-      foodImage,
+      postImage, // Change from foodImage to postImage
+      studentID,
     }, { new: true });
 
-    if (!updatedFoodItem) {
-      return res.status(404).json({ message: 'Food item not found' });
+    if (!updatedPost) {
+      return res.status(404).json({ message: 'Post not found' });
     }
 
-    res.status(200).json({ message: 'Food item updated successfully', foodItem: updatedFoodItem });
+    res.status(200).json({ message: 'Post updated successfully', post: updatedPost });
   } catch (error) {
-    console.error('Error updating food item:', error);
-    res.status(500).json({ message: "Failed to update food item", error: error.message });
+    console.error('Error updating post:', error);
+    res.status(500).json({ message: "Failed to update post", error: error.message });
   }
 });
 
-// Route to delete an existing food item
+// Route to delete an existing post
 router.delete("/delete/:id", async (req, res) => {
   try {
-    const foodItemId = req.params.id;
+    const postId = req.params.id;
 
-    const deletedFoodItem = await FoodItem.findByIdAndDelete(foodItemId);
+    const deletedPost = await CreatePost.findByIdAndDelete(postId);
 
-    if (!deletedFoodItem) {
-      return res.status(404).json({ message: 'Food item not found' });
+    if (!deletedPost) {
+      return res.status(404).json({ message: 'Post not found' });
     }
 
-    res.status(200).json({ message: 'Food item deleted successfully', deletedFoodItem });
+    res.status(200).json({ message: 'Post deleted successfully', deletedPost });
   } catch (error) {
-    console.error('Error deleting food item:', error);
-    res.status(500).json({ message: "Failed to delete food item", error: error.message });
+    console.error('Error deleting post:', error);
+    res.status(500).json({ message: "Failed to delete post", error: error.message });
   }
 });
 
-// Route to get all food items
-router.get("/getallfoodcollection", async (req, res) => {
+// Route to get all posts
+router.get("/getallpost", async (req, res) => {
   try {
-    const foodItems = await FoodItem.find();
-    res.status(200).json(foodItems);
+    const posts = await CreatePost.find();
+    res.status(200).json(posts);
   } catch (error) {
-    console.error('Error fetching food items:', error);
-    res.status(500).json({ message: "Failed to fetch food items", error: error.message });
+    console.error('Error fetching posts:', error);
+    res.status(500).json({ message: "Failed to fetch posts", error: error.message });
   }
 });
 
-// Route to get food items by vendorID
-router.get("/getbyvendor/:vendorID", async (req, res) => {
+// Route to get posts by studentID
+router.get("/getbystudent/:studentID", async (req, res) => {
   try {
-    const { vendorID } = req.params;
-    const foodItems = await FoodItem.find({ vendor: vendorID });
+    const { studentID } = req.params;
+    const posts = await CreatePost.find({ studentID });
 
-    if (!foodItems.length) {
-      return res.status(404).json({ message: 'No food items found for this vendor' });
+    if (!posts.length) {
+      return res.status(404).json({ message: 'No posts found for this student' });
     }
 
-    res.status(200).json(foodItems);
+    res.status(200).json(posts);
   } catch (error) {
-    console.error('Error fetching food items by vendorID:', error);
-    res.status(500).json({ message: "Failed to fetch food items by vendorID", error: error.message });
+    console.error('Error fetching posts by studentID:', error);
+    res.status(500).json({ message: "Failed to fetch posts by studentID", error: error.message });
   }
 });
-
 
 module.exports = router;

@@ -1,16 +1,11 @@
 const mongoose = require('mongoose');
-const foodItemSchema = new mongoose.Schema({
-    name: { type: String, required: true },
+
+const createPostSchema = new mongoose.Schema({
     description: { type: String, required: true },
-    foodType: { type: String, required: true },
-    foodImage: { type: String, required: true },
-    vendor: {
-      type: String,
-      required: true,
-    }
+    postImage: { type: String, required: true },
+    studentID: { type: String, required: true }
 });
-  
-const FoodItem = mongoose.model('FoodItem', foodItemSchema);
 
-module.exports = FoodItem;
+const CreatePost = mongoose.model('CreatePost', createPostSchema);
 
+module.exports = CreatePost;

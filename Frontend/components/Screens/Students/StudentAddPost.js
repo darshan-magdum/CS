@@ -1,49 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Modal, FlatList, Image, ScrollView, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StudentAddPost({ navigation }) {
   const [form, setForm] = useState({
-    name: '',
     description: '',
-    foodType: '',
-    foodImage: null,
-    vendorId: '',
+    postImage: null, // Changed from foodImage to postImage
+    studentID: '', // Changed from vendorId to studentID
   });
 
   useEffect(() => {
-    const fetchVendorId = async () => {
-      const storedVendorId = await AsyncStorage.getItem('userId');
-      setForm(prevForm => ({ ...prevForm, vendorId: storedVendorId }));
+    const fetchStudentId = async () => {
+      const storedStudentId = await AsyncStorage.getItem('userId');
+      setForm(prevForm => ({ ...prevForm, studentID: storedStudentId }));
     };
     
-    fetchVendorId();
+    fetchStudentId();
   }, []);
 
-  const [foodTypeModalVisible, setFoodTypeModalVisible] = useState(false);
-  const [selectedFoodType, setSelectedFoodType] = useState('');
   const [errors, setErrors] = useState({
-    name: '',
     description: '',
-    foodType: '',
-    foodImage: '',
+    postImage: '', // Changed from foodImage to postImage
   });
-
-  const handleChangeFoodType = (type) => {
-    setSelectedFoodType(type);
-    setForm({ ...form, foodType: type });
-    setErrors({ ...errors, foodType: type ? '' : 'Please select Food Type' });
-    setFoodTypeModalVisible(false);
-  };
-
-  const handleChangeName = (name) => {
-    setForm({ ...form, name });
-    setErrors({ ...errors, name: name.trim() ? '' : 'Please enter Food Name' });
-  };
 
   const handleChangeDescription = (description) => {
     setForm({ ...form, description });
@@ -59,22 +40,19 @@ export default function StudentAddPost({ navigation }) {
     });
 
     if (!result.canceled) {
-      setForm({ ...form, foodImage: result.assets[0] });
-      setErrors({ ...errors, foodImage: '' }); // Clear the error message when an image is selected
+      setForm({ ...form, postImage: result.assets[0] }); // Changed from foodImage to postImage
+      setErrors({ ...errors, postImage: '' }); // Clear the error message when an image is selected
     }
   };
 
   const handleSubmit = async () => {
     try {
-  
-      const { name, description, foodType, foodImage ,vendorId } = form;
+      const { description, postImage, studentID } = form; // Removed name
   
       let formValid = true;
       const newErrors = {
-        name: name.trim() ? '' : 'Please enter Food Name',
         description: description.trim() ? '' : 'Please enter Food Description',
-        foodType: foodType ? '' : 'Please select Food Type',
-        foodImage: foodImage ? '' : 'Please select an image',
+        postImage: postImage ? '' : 'Please select an image', // Changed from foodImage to postImage
       };
   
       setErrors(newErrors);
@@ -88,18 +66,16 @@ export default function StudentAddPost({ navigation }) {
       }
   
       const formData = new FormData();
-      formData.append('name', name);
       formData.append('description', description);
-      formData.append('foodType', foodType);
-      formData.append('vendor', vendorId);
+      formData.append('studentID', studentID); // Changed from vendorId to studentID
       
-      if (foodImage) {
-        const response = await fetch(foodImage.uri);
+      if (postImage) { // Changed from foodImage to postImage
+        const response = await fetch(postImage.uri); // Changed from foodImage to postImage
         const blob = await response.blob();
-        formData.append('foodImage', blob, foodImage.fileName || 'photo.jpg');
+        formData.append('postImage', blob, postImage.fileName || 'photo.jpg'); // Changed from foodImage to postImage
       }
   
-      const response = await axios.post('http://localhost:3000/api/UploadPosts/createfoodtocollection', formData, {
+      const response = await axios.post('http://localhost:3000/api/UploadPosts/createnewpost', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -110,23 +86,6 @@ export default function StudentAddPost({ navigation }) {
     } catch (error) {
       Alert.alert('Error submitting food item:', error.message);
     }
-  };
-
-  const renderFoodTypeItem = ({ item }) => {
-    const iconName = item === 'Veg' ? 'circle' : 'circle';
-    const iconColor = item === 'Veg' ? 'green' : 'red';
-
-    return (
-      <TouchableOpacity style={styles.pickerItem} onPress={() => handleChangeFoodType(item)}>
-        <MaterialIcon
-          name={iconName}
-          size={24}
-          color={iconColor}
-          style={styles.pickerItemIcon}
-        />
-        <Text style={styles.pickerItemText}>{item}</Text>
-      </TouchableOpacity>
-    );
   };
 
   return (
@@ -144,18 +103,6 @@ export default function StudentAddPost({ navigation }) {
 
           <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Food Name</Text>
-              <TextInput
-                style={styles.textInput}
-                value={form.name}
-                onChangeText={handleChangeName}
-                placeholder="Enter Food Name"
-                placeholderTextColor="#999"
-              />
-              {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
-            </View>
-
-            <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Description</Text>
               <TextInput
                 style={styles.textArea}
@@ -169,32 +116,12 @@ export default function StudentAddPost({ navigation }) {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Food Type</Text>
-              <TouchableOpacity style={styles.picker} onPress={() => setFoodTypeModalVisible(true)}>
-                <View style={styles.pickerRow}>
-                  {selectedFoodType ? (
-                    <MaterialIcon
-                      name={selectedFoodType === 'Veg' ? 'circle' : 'circle'}
-                      size={24}
-                      color={selectedFoodType === 'Veg' ? 'green' : 'red'}
-                      style={styles.pickerItemIcon}
-                    />
-                  ) : null}
-                  <Text style={styles.pickerText}>
-                    {selectedFoodType || 'Please select Food Type'}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              {errors.foodType ? <Text style={styles.errorText}>{errors.foodType}</Text> : null}
-            </View>
-
-            <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Photo</Text>
               <TouchableOpacity style={styles.photoPicker} onPress={handleImagePick}>
-                <Text style={styles.pickerText}>{form.foodImage ? 'Photo Selected' : 'Pick a photo'}</Text>
+                <Text style={styles.pickerText}>{form.postImage ? 'Photo Selected' : 'Pick a photo'}</Text>
               </TouchableOpacity>
-              {form.foodImage && <Image source={{ uri: form.foodImage.uri }} style={styles.selectedImage} />}
-              {errors.foodImage ? <Text style={styles.errorText}>{errors.foodImage}</Text> : null}
+              {form.postImage && <Image source={{ uri: form.postImage.uri }} style={styles.selectedImage} />}
+              {errors.postImage ? <Text style={styles.errorText}>{errors.postImage}</Text> : null} 
             </View>
           </View>
         </View>
@@ -203,22 +130,6 @@ export default function StudentAddPost({ navigation }) {
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
       </View>
-
-      <Modal visible={foodTypeModalVisible} animationType="slide" transparent={true}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Food Type</Text>
-            <FlatList
-              data={['Veg', 'Non-Veg']}
-              renderItem={renderFoodTypeItem}
-              keyExtractor={(item) => item}
-            />
-            <TouchableOpacity style={styles.closeButton} onPress={() => setFoodTypeModalVisible(false)}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </ScrollView>
   );
 }
@@ -265,14 +176,6 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     color: '#333',
   },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 10,
-    fontSize: 16,
-    color: '#333',
-  },
   textArea: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -281,23 +184,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 100,
     textAlignVertical: 'top',
-    color: '#333',
-  },
-  picker: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 4,
-    padding: 10,
-  },
-  pickerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  pickerItemIcon: {
-    marginRight: 8,
-  },
-  pickerText: {
-    fontSize: 16,
     color: '#333',
   },
   photoPicker: {
@@ -332,47 +218,5 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     marginTop: 4,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 12,
-  },
-  closeButton: {
-    marginTop: 20,
-    alignSelf: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#007bff',
-    borderRadius: 4,
-  },
-  closeButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  pickerItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  pickerItemText: {
-    fontSize: 16,
-    marginLeft: 10,
-    color: '#333',
   },
 });
