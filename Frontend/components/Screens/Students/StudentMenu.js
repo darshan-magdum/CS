@@ -25,7 +25,7 @@ export default function StudentMenu() {
       const userId = await AsyncStorage.getItem("userId"); // Retrieve user ID from AsyncStorage
       console.log("Fetching user details for userId:", userId);
       const response = await axios.get(
-        `http://localhost:3000/api/student/${userId}`
+        `http://192.168.0.113:3000/api/student/${userId}`
       ); // Fetch user details using user ID
       console.log("User Detailshh:", response.data);
 

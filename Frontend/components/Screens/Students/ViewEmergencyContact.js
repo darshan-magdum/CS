@@ -19,7 +19,7 @@ export default function ViewEmergencyContact({ navigation }) {
     const fetchEmergencyContacts = async () => {
       try {
         const studentId = await AsyncStorage.getItem('userId');
-        const response = await axios.get(`http://localhost:3000/api/EmergencyNumbers/getEmergencyContactsByStudentId/${studentId}`);
+        const response = await axios.get(`http://192.168.0.113:3000/api/EmergencyNumbers/getEmergencyContactsByStudentId/${studentId}`);
         setContacts(response.data);
       } catch (error) {
         Alert.alert('Error', 'Could not fetch contact data.');
@@ -44,7 +44,7 @@ export default function ViewEmergencyContact({ navigation }) {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/EmergencyNumbers/deleteEmergencyContact/${selectedContact._id}`);
+      await axios.delete(`http://192.168.0.113:3000/api/EmergencyNumbers/deleteEmergencyContact/${selectedContact._id}`);
       setContacts(contacts.filter(c => c._id !== selectedContact._id));
       Alert.alert('Success', 'Contact deleted successfully');
       setDeleteModalVisible(false);
@@ -62,7 +62,7 @@ export default function ViewEmergencyContact({ navigation }) {
     }
 
     try {
-      const response = await axios.put(`http://localhost:3000/api/EmergencyNumbers/updateEmergencyContact/${selectedContact._id}`, {
+      const response = await axios.put(`http://192.168.0.113:3000/api/EmergencyNumbers/updateEmergencyContact/${selectedContact._id}`, {
         name: updatedName,
         contactNo: updatedMobile,
         studentId: selectedContact.studentId,

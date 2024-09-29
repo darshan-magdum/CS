@@ -19,7 +19,7 @@ export default function StudentProfile({ navigation }) {
       const userId = await AsyncStorage.getItem('userId'); // Retrieve user ID from AsyncStorage
       console.log('Fetching user details for userIdaaqq:', userId);
 
-      const response = await axios.get(`http://localhost:3000/api/student/${userId}`); // Fetch user details using user ID
+      const response = await axios.get(`http://192.168.0.113:3000/api/student/${userId}`); // Fetch user details using user ID
       console.log('User Detailshh:', response.data);
 
       if (response.status === 200) {

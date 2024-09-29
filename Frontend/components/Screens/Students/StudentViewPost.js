@@ -10,24 +10,21 @@ export default function StudentViewPost({ navigation }) {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [updatedDescription, setUpdatedDescription] = useState('');
   const [currentPost, setCurrentPost] = useState(null);
-  const [imageModalVisible, setImageModalVisible] = useState(false);
-  const [fullSizeImage, setFullSizeImage] = useState('');
 
   useEffect(() => {
     const fetchPosts = async () => {
       const userId = await AsyncStorage.getItem("userId");
       if (userId) {
         try {
-          const response = await fetch(`http://localhost:3000/api/UploadPosts/getbystudent/${userId}`);
+          const response = await fetch(`http://192.168.0.113:3000/api/UploadPosts/getbystudent/${userId}`);
           const data = await response.json();
-          console.log('API Response:', data); // Log the response
-    
+
           if (Array.isArray(data)) {
             const sortedPosts = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setPosts(sortedPosts);
           } else {
             console.warn('Expected an array, but got:', data);
-            setPosts([]); // Set to empty array if data is not an array
+            setPosts([]);
           }
         } catch (error) {
           console.error('Error fetching posts:', error);
@@ -35,7 +32,6 @@ export default function StudentViewPost({ navigation }) {
         }
       }
     };
-    
 
     fetchPosts();
   }, []);
@@ -54,7 +50,7 @@ export default function StudentViewPost({ navigation }) {
   const confirmDelete = async () => {
     if (currentPost) {
       try {
-        await axios.delete(`http://localhost:3000/api/UploadPosts/delete/${currentPost._id}`);
+        await axios.delete(`http://192.168.0.113:3000/api/UploadPosts/delete/${currentPost._id}`);
         setPosts((prevPosts) => prevPosts.filter((post) => post._id !== currentPost._id));
         Alert.alert('Post deleted successfully');
       } catch (error) {
@@ -78,11 +74,6 @@ export default function StudentViewPost({ navigation }) {
       Alert.alert('Post updated successfully');
       setEditModalVisible(false);
     }
-  };
-
-  const showFullSizeImage = (uri) => {
-    setFullSizeImage(uri);
-    setImageModalVisible(true);
   };
 
   return (
@@ -128,22 +119,19 @@ export default function StudentViewPost({ navigation }) {
 
                 {(post.media && Array.isArray(post.media) && post.media.length > 0) ? (
                   post.media.map((image, index) => (
-                    <TouchableOpacity key={index} onPress={() => showFullSizeImage(`http://localhost:3000/${image.replace(/\\/g, '/')}`)}>
-                      <Image
-                        source={{ uri: `http://localhost:3000/${image.replace(/\\/g, '/')}` }}
-                        style={styles.postImage}
-                        onError={() => console.log('Failed to load image')}
-                      />
-                    </TouchableOpacity>
-                  ))
-                ) : post.postImage ? (
-                  <TouchableOpacity onPress={() => showFullSizeImage(`http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`)}>
                     <Image
-                      source={{ uri: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}` }}
+                      key={index}
+                      source={{ uri: `http://192.168.0.113:3000/${image.replace(/\\/g, '/')}` }}
                       style={styles.postImage}
                       onError={() => console.log('Failed to load image')}
                     />
-                  </TouchableOpacity>
+                  ))
+                ) : post.postImage ? (
+                  <Image
+                    source={{ uri: `http://192.168.0.113:3000/${post.postImage.replace(/\\/g, '/')}` }}
+                    style={styles.postImage}
+                    onError={() => console.log('Failed to load image')}
+                  />
                 ) : null}
 
                 <Text style={styles.postDescription}>{post.description}</Text>
@@ -196,15 +184,6 @@ export default function StudentViewPost({ navigation }) {
                   </TouchableOpacity>
                 </View>
               </View>
-            </View>
-          </Modal>
-
-          {/* Full-Size Image Modal */}
-          <Modal visible={imageModalVisible} transparent={true} animationType="slide">
-            <View style={styles.modalContainer}>
-              <TouchableOpacity style={styles.modalOverlay} onPress={() => setImageModalVisible(false)}>
-                <Image source={{ uri: fullSizeImage }} style={styles.fullSizeImage} />
-              </TouchableOpacity>
             </View>
           </Modal>
 
@@ -366,16 +345,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
-  },
-  fullSizeImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   noPostsContainer: {
     justifyContent: 'center',

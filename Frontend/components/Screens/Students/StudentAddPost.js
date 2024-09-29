@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, ScrollView, Modal, Alert } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
@@ -14,13 +14,11 @@ export default function StudentAddPost({ navigation }) {
   });
 
   const [userData, setUserData] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [fullSizeImage, setFullSizeImage] = useState('');
 
   const fetchUserData = useCallback(async () => {
     try {
       const userId = await AsyncStorage.getItem("userId");
-      const response = await axios.get(`http://localhost:3000/api/student/${userId}`);
+      const response = await axios.get(`http://192.168.0.113:3000/api/student/${userId}`);
       if (response.status === 200) {
         setUserData(response.data);
       }
@@ -75,7 +73,7 @@ export default function StudentAddPost({ navigation }) {
         formData.append('postImage', blob, postImage.fileName || 'photo.jpg');
       }
 
-      const response = await axios.post('http://localhost:3000/api/UploadPosts/createnewpost', formData, {
+      const response = await axios.post('http://192.168.0.113:3000/api/UploadPosts/createnewpost', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -86,11 +84,6 @@ export default function StudentAddPost({ navigation }) {
     } catch (error) {
       Alert.alert('Error creating post:', error.message);
     }
-  };
-
-  const showFullSizeImage = (uri) => {
-    setFullSizeImage(uri);
-    setModalVisible(true);
   };
 
   return (
@@ -125,9 +118,7 @@ export default function StudentAddPost({ navigation }) {
                 <Text style={styles.pickerText}>{form.postImage ? 'Photo Selected' : 'Pick a photo'}</Text>
               </TouchableOpacity>
               {form.postImage && (
-                <TouchableOpacity onPress={() => showFullSizeImage(form.postImage.uri)}>
-                  <Image source={{ uri: form.postImage.uri }} style={styles.selectedImage} />
-                </TouchableOpacity>
+                <Image source={{ uri: form.postImage.uri }} style={styles.selectedImage} />
               )}
             </View>
           </View>
@@ -136,15 +127,6 @@ export default function StudentAddPost({ navigation }) {
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
         </View>
-
-        {/* Modal for Full-Size Image */}
-        <Modal visible={modalVisible} transparent={true} animationType="slide">
-          <View style={styles.modalContainer}>
-            <TouchableOpacity style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
-              <Image source={{ uri: fullSizeImage }} style={styles.fullSizeImage} />
-            </TouchableOpacity>
-          </View>
-        </Modal>
       </View>
     </ScrollView>
   );
@@ -230,21 +212,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#fff',
     fontWeight: '600',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  fullSizeImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
   },
 });

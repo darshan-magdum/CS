@@ -37,7 +37,7 @@ export default function StudentAddEmergencyContact({ navigation }) {
 
     // Handle the emergency contact submission
     try {
-      const response = await axios.post('http://localhost:3000/api/EmergencyNumbers/addNewContact', {
+      const response = await axios.post('http://192.168.0.113:3000/api/EmergencyNumbers/addNewContact', {
         name: form.name,
         contactNo: form.contactNumber,
         studentId: studentId,

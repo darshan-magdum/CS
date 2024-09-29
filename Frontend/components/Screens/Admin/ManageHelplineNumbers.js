@@ -18,7 +18,7 @@ export default function ManageHelplineNumbers({ navigation }) {
   useEffect(() => {
     const fetchHelplineNumbers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/HelplineNumbers/getallHelplineNumbers');
+        const response = await axios.get('http://192.168.0.113:3000/api/HelplineNumbers/getallHelplineNumbers');
         setHelplineData(response.data);
       } catch (error) {
         console.error('Error fetching helpline numbers:', error);
@@ -43,7 +43,7 @@ export default function ManageHelplineNumbers({ navigation }) {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`http://localhost:3000/api/HelplineNumbers/DeleteHelplineNumber/${currentHelpline._id}`);
+      await axios.delete(`http://192.168.0.113:3000/api/HelplineNumbers/DeleteHelplineNumber/${currentHelpline._id}`);
       setHelplineData(prev => prev.filter(item => item._id !== currentHelpline._id));
       Alert.alert('Success', 'Helpline number deleted successfully');
       navigation.goBack();
@@ -65,7 +65,7 @@ export default function ManageHelplineNumbers({ navigation }) {
     }
 
     try {
-      const response = await axios.put(`http://localhost:3000/api/HelplineNumbers/UpdateHelplineNumber/${currentHelpline._id}`, {
+      const response = await axios.put(`http://192.168.0.113:3000/api/HelplineNumbers/UpdateHelplineNumber/${currentHelpline._id}`, {
         name: updatedName,
         contactNo: updatedNumber,
       });
