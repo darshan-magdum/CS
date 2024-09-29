@@ -1,26 +1,44 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Modal, FlatList } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 export default function StudentAddPost({ navigation }) {
-  const [form, setForm] = useState({
-    description: '',
-  });
-
+  const [form, setForm] = useState({ description: '' });
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedMediaType, setSelectedMediaType] = useState('');
+  const [photo, setPhoto] = useState(null);
+  const [video, setVideo] = useState(null);
 
   const handleChangeDescription = (description) => {
     setForm({ ...form, description });
   };
 
   const handleSubmit = () => {
-    // Here you can handle the post submission with static data
-    console.log('Post submitted:', form.description, selectedMediaType);
-    // Show success alert or reset the form
+    console.log('Post submitted:', form.description, selectedMediaType, photo, video);
     alert('Post submitted successfully');
     setForm({ description: '' });
     setSelectedMediaType('');
+    setPhoto(null);
+    setVideo(null);
+  };
+
+  const handleUploadPhoto = () => {
+    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+      if (!response.didCancel && !response.error) {
+        setPhoto(response.assets[0]);
+        alert('Photo uploaded successfully');
+      }
+    });
+  };
+
+  const handleUploadVideo = () => {
+    launchImageLibrary({ mediaType: 'video' }, (response) => {
+      if (!response.didCancel && !response.error) {
+        setVideo(response.assets[0]);
+        alert('Video uploaded successfully');
+      }
+    });
   };
 
   const renderPickerItem = ({ item }) => (
@@ -61,6 +79,18 @@ export default function StudentAddPost({ navigation }) {
                 placeholderTextColor="#999"
               />
             </View>
+
+            {selectedMediaType === 'Photo' && (
+              <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
+                <Text style={styles.uploadButtonText}>Upload Photo</Text>
+              </TouchableOpacity>
+            )}
+
+            {selectedMediaType === 'Video' && (
+              <TouchableOpacity style={styles.uploadButton} onPress={handleUploadVideo}>
+                <Text style={styles.uploadButtonText}>Pick Video</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -118,7 +148,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
     marginBottom: 25,
-    
   },
   formContainer: {
     marginTop: 12,
@@ -201,6 +230,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   closeButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  uploadButton: {
+    marginTop: 12,
+    backgroundColor: '#007bff',
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  uploadButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
