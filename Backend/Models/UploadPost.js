@@ -9,8 +9,8 @@ const uploadPostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  media: {
-    type: String, // Store a URL or path to the uploaded file
+  media: { 
+    type: String,
     required: true,
   },
   createdAt: {
