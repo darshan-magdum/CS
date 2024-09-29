@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   post: {
-    margin: 16,
+    margin: 13,
     backgroundColor: '#EFEFEF',
     borderRadius: 15,
     overflow: 'hidden',
@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   postImage: {
     width: '100%',
-    height: 200,
+    height: 340,
   },
   postDescription: {
     padding: 10,
