@@ -20,18 +20,20 @@ const upload = multer({ storage: storage });
 // Route to create a new post
 router.post("/createnewpost", upload.single('postImage'), async (req, res) => {
   try {
-    const { description, studentID } = req.body; // Updated fields
+    const { description, studentID, studentName } = req.body; // Added studentName
+
     const postImage = req.file ? req.file.path : null; // Change from foodImage to postImage
 
     // Check if all fields are provided
-    if (!description || !postImage || !studentID) {
-      return res.status(400).json({ message: 'All fields (description, postImage, studentID) are required' });
+    if (!description || !postImage || !studentID || !studentName) {
+      return res.status(400).json({ message: 'All fields (description, postImage, studentID, studentName) are required' });
     }
 
     const newPost = new CreatePost({
       description,
       postImage, // Change from foodImage to postImage
       studentID,
+      studentName, // Added studentName
     });
 
     const savedPost = await newPost.save();
@@ -48,19 +50,20 @@ router.put("/edit/:id", upload.single('postImage'), async (req, res) => {
   console.log('Received Body:', req.body); // Debugging: Log form data
 
   try {
-    const { description, studentID } = req.body; // Updated fields
+    const { description, studentID, studentName } = req.body; // Updated fields
     const postImage = req.file ? req.file.path : req.body.postImage; // Use new file if uploaded, else keep the old one
     const postId = req.params.id;
 
     // Check if all fields are provided
-    if (!description || !studentID) {
-      return res.status(400).json({ message: 'All fields (description, studentID) are required' });
+    if (!description || !studentID || !studentName) {
+      return res.status(400).json({ message: 'All fields (description, studentID, studentName) are required' });
     }
 
     const updatedPost = await CreatePost.findByIdAndUpdate(postId, {
       description,
       postImage, // Change from foodImage to postImage
       studentID,
+      studentName, // Added studentName
     }, { new: true });
 
     if (!updatedPost) {

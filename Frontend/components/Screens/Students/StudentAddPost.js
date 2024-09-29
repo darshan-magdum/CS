@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Image, ScrollView, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function StudentAddPost({ navigation }) {
   const [form, setForm] = useState({
@@ -11,6 +12,38 @@ export default function StudentAddPost({ navigation }) {
     postImage: null, 
     studentID: '', 
   });
+
+  const [userData, setUserData] = useState(null); // State to hold user data
+
+  const fetchUserData = useCallback(async () => {
+    try {
+      const userId = await AsyncStorage.getItem("userId"); // Retrieve user ID from AsyncStorage
+      console.log("Fetching user details for userId:", userId);
+      const response = await axios.get(
+        `http://localhost:3000/api/student/${userId}`
+      ); // Fetch user details using user ID
+      console.log("User Detailshh:", response.data);
+
+      if (response.status === 200) {
+        setUserData(response.data); // Set user data to state
+      } else {
+        console.error("Failed to fetch user details");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      // Handle error scenarios
+    }
+  }, []); // Add empty dependency array to ensure this function is stable and does not change
+
+  useEffect(() => {
+    fetchUserData(); // Fetch user data on component mount
+  }, [fetchUserData]); // Ensure useEffect runs when fetchUserData changes
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [fetchUserData])
+  );
 
   useEffect(() => {
     const fetchStudentId = async () => {
@@ -47,12 +80,12 @@ export default function StudentAddPost({ navigation }) {
 
   const handleSubmit = async () => {
     try {
-      const { description, postImage, studentID } = form; 
+      const { description, postImage, studentID } = form;
   
       let formValid = true;
       const newErrors = {
         description: description.trim() ? '' : 'Please enter Description',
-        postImage: postImage ? '' : 'Please select an image', 
+        postImage: postImage ? '' : 'Please select an image',
       };
   
       setErrors(newErrors);
@@ -67,12 +100,17 @@ export default function StudentAddPost({ navigation }) {
   
       const formData = new FormData();
       formData.append('description', description);
-      formData.append('studentID', studentID); 
+      formData.append('studentID', studentID);
       
-      if (postImage) { 
-        const response = await fetch(postImage.uri); 
+      // Include userData.name in the payload as studentName
+      if (userData) {
+        formData.append('studentName', userData.name); // Use 'studentName' as expected by the server
+      }
+  
+      if (postImage) {
+        const response = await fetch(postImage.uri);
         const blob = await response.blob();
-        formData.append('postImage', blob, postImage.fileName || 'photo.jpg'); 
+        formData.append('postImage', blob, postImage.fileName || 'photo.jpg');
       }
   
       const response = await axios.post('http://localhost:3000/api/UploadPosts/createnewpost', formData, {
@@ -82,11 +120,12 @@ export default function StudentAddPost({ navigation }) {
       });
   
       Alert.alert(response.data.message);
-      navigation.goBack(); 
+      navigation.goBack();
     } catch (error) {
       Alert.alert('Error creating post:', error.message);
     }
   };
+  
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -99,7 +138,8 @@ export default function StudentAddPost({ navigation }) {
         </View>
 
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Create New Post</Text>
+          <Text style={styles.sectionTitle}>Create New post
+          </Text>
 
           <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
