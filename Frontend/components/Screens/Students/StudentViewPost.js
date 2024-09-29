@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, Alert, ScrollView } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function StudentViewPost({ navigation }) {
   const [posts, setPosts] = useState([]);
@@ -37,11 +38,20 @@ export default function StudentViewPost({ navigation }) {
     setDeleteModalVisible(true);
   };
 
-  const confirmDelete = () => {
-    // Add your deletion logic here (API call)
-    Alert.alert('Post deleted successfully');
-    setDeleteModalVisible(false);
-    // Optionally, refresh the posts
+  const confirmDelete = async () => {
+    if (currentPost) {
+      try {
+        await axios.delete(`http://localhost:3000/api/UploadPosts/delete/${currentPost._id}`);
+        setPosts((prevPosts) => prevPosts.filter((post) => post._id !== currentPost._id));
+        Alert.alert('Post deleted successfully');
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error deleting post. Please try again.');
+      } finally {
+        setDeleteModalVisible(false);
+        setCurrentPost(null); // Clear current post after deletion
+      }
+    }
   };
 
   const handleSave = () => {
@@ -299,37 +309,45 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   saveButton: {
-    backgroundColor: '#ff4d4d',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#007bff',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
     flex: 1,
     marginRight: 5,
   },
   confirmButton: {
     backgroundColor: '#007bff',
-    padding: 10,
-    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
     flex: 1,
     marginRight: 5,
   },
   noButton: {
-    backgroundColor: '#ccc',
-    padding: 10,
-    borderRadius: 5,
+    backgroundColor: '#ff4d4d',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
     flex: 1,
-    marginLeft: 5,
   },
   saveButtonText: {
     color: '#fff',
-    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
   },
   confirmButtonText: {
     color: '#fff',
-    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
   },
   noButtonText: {
-    color: '#333',
-    textAlign: 'center',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   fullSizeImage: {
     width: '100%',
