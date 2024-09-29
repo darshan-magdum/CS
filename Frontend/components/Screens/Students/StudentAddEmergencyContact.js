@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function StudentAddEmergencyContact({ navigation }) {
   const [form, setForm] = useState({
@@ -16,15 +18,42 @@ export default function StudentAddEmergencyContact({ navigation }) {
     setForm({ ...form, contactNumber });
   };
 
-  const handleSubmit = () => {
+  const validateContactNumber = (contactNumber) => {
+    const regex = /^\+?\d{10,15}$/; // Adjust regex as needed
+    return regex.test(contactNumber);
+  };
+
+  const handleSubmit = async () => {
+    const studentId = await AsyncStorage.getItem('userId'); 
     if (!form.name || !form.contactNumber) {
       Alert.alert('Error', 'Please fill out both fields.');
       return;
     }
+
+    if (!validateContactNumber(form.contactNumber)) {
+      Alert.alert('Error', 'Please enter a valid contact number.');
+      return;
+    }
+
     // Handle the emergency contact submission
-    console.log('Emergency contact submitted:', form.name, form.contactNumber);
-    Alert.alert('Success', 'Emergency contact added successfully');
-    setForm({ name: '', contactNumber: '' });
+    try {
+      const response = await axios.post('http://localhost:3000/api/EmergencyNumbers/addNewContact', {
+        name: form.name,
+        contactNo: form.contactNumber,
+        studentId: studentId,
+      });
+
+      Alert.alert('Success', 'Emergency contact added successfully');
+      setForm({ name: '', contactNumber: '' });
+    } catch (error) {
+      if (error.response) {
+        // Server responded with a status other than 2xx
+        Alert.alert('Error', error.response.data.message || 'Failed to add contact');
+      } else {
+        // Other errors (network error, etc.)
+        Alert.alert('Error', 'An unexpected error occurred.');
+      }
+    }
   };
 
   return (

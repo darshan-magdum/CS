@@ -8,6 +8,7 @@ const connection = require("./db"); // Import the database connection function
 const adminAuth = require('./Routes/adminauth'); 
 const studentAuth = require('./Routes/studentauth'); 
 const HelpLineNumbers = require('./Routes/HelpLineNumbers'); 
+const EmergencyNumbers = require('./Routes/EmergencyNumbers'); 
 
 
 
@@ -31,6 +32,7 @@ app.use('/uploads', express.static('uploads'));
 app.use("/api/admin", adminAuth);
 app.use("/api/HelplineNumbers", HelpLineNumbers);
 app.use("/api/Student", studentAuth);
+app.use("/api/EmergencyNumbers", EmergencyNumbers);
 
 
 // Define the port for the server
