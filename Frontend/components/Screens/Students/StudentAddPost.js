@@ -8,8 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function StudentAddPost({ navigation }) {
   const [form, setForm] = useState({
     description: '',
-    postImage: null, // Changed from foodImage to postImage
-    studentID: '', // Changed from vendorId to studentID
+    postImage: null, 
+    studentID: '', 
   });
 
   useEffect(() => {
@@ -23,12 +23,12 @@ export default function StudentAddPost({ navigation }) {
 
   const [errors, setErrors] = useState({
     description: '',
-    postImage: '', // Changed from foodImage to postImage
+    postImage: '', 
   });
 
   const handleChangeDescription = (description) => {
     setForm({ ...form, description });
-    setErrors({ ...errors, description: description.trim() ? '' : 'Please enter Food Description' });
+    setErrors({ ...errors, description: description.trim() ? '' : 'Please enter Description' });
   };
 
   const handleImagePick = async () => {
@@ -40,19 +40,19 @@ export default function StudentAddPost({ navigation }) {
     });
 
     if (!result.canceled) {
-      setForm({ ...form, postImage: result.assets[0] }); // Changed from foodImage to postImage
-      setErrors({ ...errors, postImage: '' }); // Clear the error message when an image is selected
+      setForm({ ...form, postImage: result.assets[0] }); 
+      setErrors({ ...errors, postImage: '' }); 
     }
   };
 
   const handleSubmit = async () => {
     try {
-      const { description, postImage, studentID } = form; // Removed name
+      const { description, postImage, studentID } = form; 
   
       let formValid = true;
       const newErrors = {
-        description: description.trim() ? '' : 'Please enter Food Description',
-        postImage: postImage ? '' : 'Please select an image', // Changed from foodImage to postImage
+        description: description.trim() ? '' : 'Please enter Description',
+        postImage: postImage ? '' : 'Please select an image', 
       };
   
       setErrors(newErrors);
@@ -67,12 +67,12 @@ export default function StudentAddPost({ navigation }) {
   
       const formData = new FormData();
       formData.append('description', description);
-      formData.append('studentID', studentID); // Changed from vendorId to studentID
+      formData.append('studentID', studentID); 
       
-      if (postImage) { // Changed from foodImage to postImage
-        const response = await fetch(postImage.uri); // Changed from foodImage to postImage
+      if (postImage) { 
+        const response = await fetch(postImage.uri); 
         const blob = await response.blob();
-        formData.append('postImage', blob, postImage.fileName || 'photo.jpg'); // Changed from foodImage to postImage
+        formData.append('postImage', blob, postImage.fileName || 'photo.jpg'); 
       }
   
       const response = await axios.post('http://localhost:3000/api/UploadPosts/createnewpost', formData, {
@@ -84,7 +84,7 @@ export default function StudentAddPost({ navigation }) {
       Alert.alert(response.data.message);
       navigation.goBack(); 
     } catch (error) {
-      Alert.alert('Error submitting food item:', error.message);
+      Alert.alert('Error creating post:', error.message);
     }
   };
 
@@ -95,11 +95,11 @@ export default function StudentAddPost({ navigation }) {
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FeatherIcon name="chevron-left" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Food Collection</Text>
+          <Text style={styles.headerTitle}>New Post</Text>
         </View>
 
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Add Food Item To Collection</Text>
+          <Text style={styles.sectionTitle}>Create New Post</Text>
 
           <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
@@ -109,7 +109,7 @@ export default function StudentAddPost({ navigation }) {
                 value={form.description}
                 onChangeText={handleChangeDescription}
                 multiline
-                placeholder="Enter Food Description"
+                placeholder="Enter Description"
                 placeholderTextColor="#999"
               />
               {errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
@@ -172,8 +172,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   inputLabel: {
+    marginBottom: 8,
     fontSize: 16,
-    marginBottom: 4,
+    fontWeight: '500',
     color: '#333',
   },
   textArea: {
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   submitButton: {
-    backgroundColor: '#007bff',
+    backgroundColor: '#FF8613',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 4,
