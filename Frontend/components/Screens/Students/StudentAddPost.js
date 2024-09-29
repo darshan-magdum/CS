@@ -1,71 +1,158 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Modal, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TextInput, TouchableOpacity, Modal, FlatList, Image, ScrollView, Alert } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { launchImageLibrary } from 'react-native-image-picker';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function StudentAddPost({ navigation }) {
-  const [form, setForm] = useState({ description: '' });
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedMediaType, setSelectedMediaType] = useState('');
-  const [photo, setPhoto] = useState(null);
-  const [video, setVideo] = useState(null);
+  const [form, setForm] = useState({
+    name: '',
+    description: '',
+    foodType: '',
+    foodImage: null,
+    vendorId: '',
+  });
+
+  useEffect(() => {
+    const fetchVendorId = async () => {
+      const storedVendorId = await AsyncStorage.getItem('userId');
+      setForm(prevForm => ({ ...prevForm, vendorId: storedVendorId }));
+    };
+    
+    fetchVendorId();
+  }, []);
+
+  const [foodTypeModalVisible, setFoodTypeModalVisible] = useState(false);
+  const [selectedFoodType, setSelectedFoodType] = useState('');
+  const [errors, setErrors] = useState({
+    name: '',
+    description: '',
+    foodType: '',
+    foodImage: '',
+  });
+
+  const handleChangeFoodType = (type) => {
+    setSelectedFoodType(type);
+    setForm({ ...form, foodType: type });
+    setErrors({ ...errors, foodType: type ? '' : 'Please select Food Type' });
+    setFoodTypeModalVisible(false);
+  };
+
+  const handleChangeName = (name) => {
+    setForm({ ...form, name });
+    setErrors({ ...errors, name: name.trim() ? '' : 'Please enter Food Name' });
+  };
 
   const handleChangeDescription = (description) => {
     setForm({ ...form, description });
+    setErrors({ ...errors, description: description.trim() ? '' : 'Please enter Food Description' });
   };
 
-  const handleSubmit = () => {
-    console.log('Post submitted:', form.description, selectedMediaType, photo, video);
-    alert('Post submitted successfully');
-    setForm({ description: '' });
-    setSelectedMediaType('');
-    setPhoto(null);
-    setVideo(null);
-  };
-
-  const handleUploadPhoto = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
-      if (!response.didCancel && !response.error) {
-        setPhoto(response.assets[0]);
-        alert('Photo uploaded successfully');
-      }
+  const handleImagePick = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
     });
+
+    if (!result.canceled) {
+      setForm({ ...form, foodImage: result.assets[0] });
+      setErrors({ ...errors, foodImage: '' }); // Clear the error message when an image is selected
+    }
   };
 
-  const handleUploadVideo = () => {
-    launchImageLibrary({ mediaType: 'video' }, (response) => {
-      if (!response.didCancel && !response.error) {
-        setVideo(response.assets[0]);
-        alert('Video uploaded successfully');
+  const handleSubmit = async () => {
+    try {
+  
+      const { name, description, foodType, foodImage ,vendorId } = form;
+  
+      let formValid = true;
+      const newErrors = {
+        name: name.trim() ? '' : 'Please enter Food Name',
+        description: description.trim() ? '' : 'Please enter Food Description',
+        foodType: foodType ? '' : 'Please select Food Type',
+        foodImage: foodImage ? '' : 'Please select an image',
+      };
+  
+      setErrors(newErrors);
+  
+      if (Object.values(newErrors).some(error => error !== '')) {
+        formValid = false;
       }
-    });
+  
+      if (!formValid) {
+        return;
+      }
+  
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('foodType', foodType);
+      formData.append('vendor', vendorId);
+      
+      if (foodImage) {
+        const response = await fetch(foodImage.uri);
+        const blob = await response.blob();
+        formData.append('foodImage', blob, foodImage.fileName || 'photo.jpg');
+      }
+  
+      const response = await axios.post('http://localhost:3000/api/UploadPosts/createfoodtocollection', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+  
+      Alert.alert(response.data.message);
+      navigation.goBack(); 
+    } catch (error) {
+      Alert.alert('Error submitting food item:', error.message);
+    }
   };
 
-  const renderPickerItem = ({ item }) => (
-    <TouchableOpacity style={styles.pickerItem} onPress={() => { setSelectedMediaType(item); setModalVisible(false); }}>
-      <Text style={styles.pickerItemText}>{item}</Text>
-    </TouchableOpacity>
-  );
+  const renderFoodTypeItem = ({ item }) => {
+    const iconName = item === 'Veg' ? 'circle' : 'circle';
+    const iconColor = item === 'Veg' ? 'green' : 'red';
+
+    return (
+      <TouchableOpacity style={styles.pickerItem} onPress={() => handleChangeFoodType(item)}>
+        <MaterialIcon
+          name={iconName}
+          size={24}
+          color={iconColor}
+          style={styles.pickerItemIcon}
+        />
+        <Text style={styles.pickerItemText}>{item}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+    <ScrollView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FeatherIcon name="chevron-left" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Add Post</Text>
+          <Text style={styles.headerTitle}>Food Collection</Text>
         </View>
 
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Create a New Post</Text>
+          <Text style={styles.sectionTitle}>Add Food Item To Collection</Text>
 
           <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Media Type</Text>
-              <TouchableOpacity style={styles.picker} onPress={() => setModalVisible(true)}>
-                <Text style={styles.pickerText}>{selectedMediaType || 'Please select Media Type'}</Text>
-              </TouchableOpacity>
+              <Text style={styles.inputLabel}>Food Name</Text>
+              <TextInput
+                style={styles.textInput}
+                value={form.name}
+                onChangeText={handleChangeName}
+                placeholder="Enter Food Name"
+                placeholderTextColor="#999"
+              />
+              {errors.name ? <Text style={styles.errorText}>{errors.name}</Text> : null}
             </View>
 
             <View style={styles.inputContainer}>
@@ -75,22 +162,40 @@ export default function StudentAddPost({ navigation }) {
                 value={form.description}
                 onChangeText={handleChangeDescription}
                 multiline
-                placeholder="Enter your description here"
+                placeholder="Enter Food Description"
                 placeholderTextColor="#999"
               />
+              {errors.description ? <Text style={styles.errorText}>{errors.description}</Text> : null}
             </View>
 
-            {selectedMediaType === 'Photo' && (
-              <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-                <Text style={styles.uploadButtonText}>Upload Photo</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Food Type</Text>
+              <TouchableOpacity style={styles.picker} onPress={() => setFoodTypeModalVisible(true)}>
+                <View style={styles.pickerRow}>
+                  {selectedFoodType ? (
+                    <MaterialIcon
+                      name={selectedFoodType === 'Veg' ? 'circle' : 'circle'}
+                      size={24}
+                      color={selectedFoodType === 'Veg' ? 'green' : 'red'}
+                      style={styles.pickerItemIcon}
+                    />
+                  ) : null}
+                  <Text style={styles.pickerText}>
+                    {selectedFoodType || 'Please select Food Type'}
+                  </Text>
+                </View>
               </TouchableOpacity>
-            )}
+              {errors.foodType ? <Text style={styles.errorText}>{errors.foodType}</Text> : null}
+            </View>
 
-            {selectedMediaType === 'Video' && (
-              <TouchableOpacity style={styles.uploadButton} onPress={handleUploadVideo}>
-                <Text style={styles.uploadButtonText}>Pick Video</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Photo</Text>
+              <TouchableOpacity style={styles.photoPicker} onPress={handleImagePick}>
+                <Text style={styles.pickerText}>{form.foodImage ? 'Photo Selected' : 'Pick a photo'}</Text>
               </TouchableOpacity>
-            )}
+              {form.foodImage && <Image source={{ uri: form.foodImage.uri }} style={styles.selectedImage} />}
+              {errors.foodImage ? <Text style={styles.errorText}>{errors.foodImage}</Text> : null}
+            </View>
           </View>
         </View>
 
@@ -99,22 +204,22 @@ export default function StudentAddPost({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <Modal visible={foodTypeModalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Select Media Type</Text>
+            <Text style={styles.modalTitle}>Select Food Type</Text>
             <FlatList
-              data={['Photo', 'Video']}
-              renderItem={renderPickerItem}
+              data={['Veg', 'Non-Veg']}
+              renderItem={renderFoodTypeItem}
               keyExtractor={(item) => item}
             />
-            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+            <TouchableOpacity style={styles.closeButton} onPress={() => setFoodTypeModalVisible(false)}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </ScrollView>
   );
 }
 
@@ -147,54 +252,86 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 25,
+    marginBottom: 12,
   },
   formContainer: {
-    marginTop: 12,
+    marginTop: 8,
   },
   inputContainer: {
-    marginBottom: 24,
+    marginBottom: 16,
   },
   inputLabel: {
-    marginBottom: 8,
     fontSize: 16,
-    fontWeight: '500',
+    marginBottom: 4,
     color: '#333',
   },
-  picker: {
+  textInput: {
     borderWidth: 1,
     borderColor: '#ccc',
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
-  pickerText: {
+    borderRadius: 4,
+    padding: 10,
     fontSize: 16,
     color: '#333',
   },
   textArea: {
     borderWidth: 1,
     borderColor: '#ccc',
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    borderRadius: 8,
+    borderRadius: 4,
+    padding: 10,
     fontSize: 16,
-    height: 120,
+    height: 100,
     textAlignVertical: 'top',
     color: '#333',
   },
+  picker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 10,
+  },
+  pickerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pickerItemIcon: {
+    marginRight: 8,
+  },
+  pickerText: {
+    fontSize: 16,
+    color: '#333',
+  },
+  photoPicker: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 4,
+    padding: 10,
+    alignItems: 'center',
+  },
+  selectedImage: {
+    marginTop: 10,
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+    borderRadius: 4,
+  },
   submitButton: {
+    backgroundColor: '#007bff',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 4,
+    marginTop: 20,
     marginHorizontal: 24,
-    marginTop: 24,
-    backgroundColor: '#FF8613',
-    paddingVertical: 14,
-    borderRadius: 8,
     alignItems: 'center',
   },
   submitButtonText: {
+    fontSize: 18,
     color: '#fff',
-    fontSize: 16,
     fontWeight: '600',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 4,
   },
   modalContainer: {
     flex: 1,
@@ -203,47 +340,39 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '80%',
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 24,
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 12,
-    textAlign: 'center',
-  },
-  pickerItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-  },
-  pickerItemText: {
-    fontSize: 16,
     color: '#333',
+    marginBottom: 12,
   },
   closeButton: {
-    marginTop: 24,
+    marginTop: 20,
+    alignSelf: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     backgroundColor: '#007bff',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    borderRadius: 4,
   },
   closeButtonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
   },
-  uploadButton: {
-    marginTop: 12,
-    backgroundColor: '#007bff',
-    paddingVertical: 14,
-    borderRadius: 8,
+  pickerItem: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
-  uploadButtonText: {
-    color: '#fff',
+  pickerItemText: {
     fontSize: 16,
-    fontWeight: '600',
+    marginLeft: 10,
+    color: '#333',
   },
 });
