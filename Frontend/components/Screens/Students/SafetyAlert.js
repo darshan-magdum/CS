@@ -58,7 +58,7 @@ export default function SafetyAlert() {
 
       try {
         // Send data to the backend using Axios
-        const response = await axios.post('http://192.168.0.114:3000/api/StudentLocation/addlocation', emergencyData);
+        const response = await axios.post('http://localhost:3000/api/StudentLocation/addlocation', emergencyData);
         console.log("Response from server: ", response.data);
         Alert.alert("Success", "Emergency data sent successfully.");
       } catch (error) {

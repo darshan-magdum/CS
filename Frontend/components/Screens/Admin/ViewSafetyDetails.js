@@ -14,7 +14,7 @@ export default function ViewSafetyDetails({ navigation }) {
 
   const fetchSafetyDetails = async () => {
     try {
-      const response = await axios.get('http://192.168.0.114:3000/api/StudentLocation/getsafetydetails');
+      const response = await axios.get('http://localhost:3000/api/StudentLocation/getsafetydetails');
       setSafetyData(response.data);
     } catch (error) {
       Alert.alert("Error", "Failed to fetch safety details.");
