@@ -1,15 +1,74 @@
-import React from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert, Linking } from 'react-native';
+import * as Location from 'expo-location'; // Use expo-location if you are using Expo
 import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; // Ensure the correct path
 
-export default function SafetyAlert({ navigation }) {
+export default function SafetyAlert() {
+  const [location, setLocation] = useState(null);
+  const [fetchingLocation, setFetchingLocation] = useState(false); // Track if location is being fetched
+
+  useEffect(() => {
+    const getLocation = async () => {
+      setFetchingLocation(true);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission to access location was denied');
+        setFetchingLocation(false);
+        return;
+      }
+
+      // Get current location
+      try {
+        let currentLocation = await Location.getCurrentPositionAsync({});
+        setLocation({
+          latitude: currentLocation.coords.latitude,
+          longitude: currentLocation.coords.longitude,
+        });
+      } catch (error) {
+        Alert.alert("Error", "Failed to get location. Please try again.");
+      } finally {
+        setFetchingLocation(false);
+      }
+    };
+
+    getLocation();
+  }, []);
+
   const handleEmergencyHelp = () => {
-    // Show alert on emergency help button press
-    Alert.alert(
-      "Emergency Help",
-      "You have pressed the emergency help button.",
-      [{ text: "OK" }]
-    );
+    const username = "darshan"; // Hardcoded username
+    const contactNumber = "9307741995"; // Hardcoded contact number
+
+    if (location) {
+      const { latitude, longitude } = location;
+
+      // Prepare emergency data
+      const emergencyData = {
+        username,
+        contactNumber,
+        location: {
+          latitude,
+          longitude,
+        },
+      };
+
+      console.log("Emergency Data: ", emergencyData); // Log data for testing
+
+      // Construct Google Maps URL
+      const mapUrl = `https://www.google.com/maps/@${latitude},${longitude},15z`;
+
+      // Open the map URL
+      Linking.openURL(mapUrl).catch(err => 
+        Alert.alert("Error", "Failed to open maps.")
+      );
+
+      Alert.alert(
+        "Emergency Help",
+        "You have pressed the emergency help button.",
+        [{ text: "OK" }]
+      );
+    } else {
+      Alert.alert("Fetching Location", "Please wait while we get your location...");
+    }
   };
 
   return (
@@ -20,8 +79,10 @@ export default function SafetyAlert({ navigation }) {
         </View>
 
         <View style={styles.detailsContainer}>
-          {/* Centered Emergency Help Button with Image */}
-          <TouchableOpacity style={styles.emergencyButton} onPress={handleEmergencyHelp}>
+          <TouchableOpacity 
+            style={styles.emergencyButton} 
+            onPress={handleEmergencyHelp}
+          >
             <Image source={emergencysafetybutton} style={styles.iconImage} />
           </TouchableOpacity>
 
@@ -29,6 +90,8 @@ export default function SafetyAlert({ navigation }) {
           <Text style={styles.description}>
             Press the button for emergency help only.
           </Text>
+
+          {fetchingLocation && <Text style={styles.loadingText}>Fetching location...</Text>}
         </View>
       </View>
     </SafeAreaView>
@@ -60,25 +123,30 @@ const styles = StyleSheet.create({
   },
   emergencyButton: {
     backgroundColor: 'white',
-    width: 100, // Adjust size for the button
-    height: 100, // Adjust size for the button
-    borderRadius: 50, // Circle shape
+    width: 100,
+    height: 100,
+    borderRadius: 50,
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 5, // Add shadow for Android
-    shadowColor: '#000', // Add shadow for iOS
+    elevation: 5,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
-    marginBottom: 20, // Space between button and image
+    marginBottom: 20,
   },
   iconImage: {
-    width: 60, // Adjust size for the icon
-    height: 60, // Adjust size for the icon
+    width: 60,
+    height: 60,
   },
   description: {
     textAlign: 'center',
     fontSize: 16,
     color: '#333',
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 14,
+    color: 'grey',
   },
 });
