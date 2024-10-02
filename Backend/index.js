@@ -11,7 +11,7 @@ const HelpLineNumbers = require('./Routes/HelpLineNumbers');
 const EmergencyNumbers = require('./Routes/EmergencyNumbers'); 
 const UploadPosts = require('./Routes/uploadPostRoutes'); 
 const AddIncidence = require('./Routes/AddIncidenceRoutes'); 
-
+const AddArticle = require('./Routes/AddArticleRoutes');
 
 
 
@@ -39,6 +39,9 @@ app.use("/api/Student", studentAuth);
 app.use("/api/EmergencyNumbers", EmergencyNumbers);
 app.use("/api/UploadPosts", UploadPosts);
 app.use("/api/Incidence", AddIncidence);
+app.use("/api/Article", AddArticle);
+
+
 
 
 // Define the port for the server
