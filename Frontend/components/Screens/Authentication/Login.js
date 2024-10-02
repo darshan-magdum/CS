@@ -75,7 +75,7 @@ export default function Login() {
     } catch (userError) {
       try {
         // Attempt admin login if user login fails
-        const adminResponse = await axios.post('http://localhost:3000/api/admin/login', form);
+        const adminResponse = await axios.post('http://192.168.0.114:3000/api/admin/login', form);
         const { token, adminId, message } = adminResponse.data;
 
         await AsyncStorage.setItem('adminToken', token);

@@ -9,6 +9,7 @@ import AdminHome from "../../components/Screens/Admin/AdminHome";
 import AddHelplineNumber from "../../components/Screens/Admin/AddHelplineNumber";
 import ManageHelplineNumbers from "../../components/Screens/Admin/ManageHelplineNumbers";
 import AdminProfile from "../../components/Screens/Admin/AdminProfile";
+import ViewSafetyDetails from "../../components/Screens/Admin/ViewSafetyDetails";
 import AddArticle from "../../components/Screens/Admin/AddArticle";
 import ManageArticle from "../../components/Screens/Admin/ManageArticle";
 import StudentMenu from "../../components/Screens/Students/StudentMenu";
@@ -57,6 +58,7 @@ export default function HomeScreen() {
           <Stack.Screen name="AdminHome" component={AdminHome} />
           <Stack.Screen name="AdminMenu" component={AdminMenu} />
           <Stack.Screen name="AdminProfile" component={AdminProfile} />
+          <Stack.Screen name="ViewSafetyDetails" component={ViewSafetyDetails} />
           <Stack.Screen name="AddArticle" component={AddArticle} />
           <Stack.Screen name="ManageArticle" component={ManageArticle} />
           <Stack.Screen name="AddHelplineNumber" component={AddHelplineNumber} />

@@ -90,6 +90,20 @@ export default function AdminMenu() {
             </TouchableOpacity>
 
 
+ {/* View Safety Alerts */}
+ <TouchableOpacity
+              onPress={() => navigation.navigate("ViewSafetyDetails")}
+              style={styles.row}
+            >
+              <View style={[styles.rowIcon, { backgroundColor: "orange" }]}>
+                <FeatherIcon color="#fff" name="alert-circle" size={20} />
+              </View>
+              <Text style={styles.rowLabel}>View Safety Alerts</Text>
+              <View style={styles.rowSpacer} />
+              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+            </TouchableOpacity>
+
+
      {/* Add Article */}
             <TouchableOpacity
               onPress={() => navigation.navigate("AddArticle")}
