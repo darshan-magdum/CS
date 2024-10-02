@@ -1,112 +1,190 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInput, Image, Alert, ScrollView } from 'react-native';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-
-const mockArticleData = {
-  id: 1,
-  title: 'Sample Article Title',
-  author: 'Jane Doe',
-  date: '2024-09-20',
-  image: 'https://via.placeholder.com/300',
-  description: 'This is a sample description for the article.',
-};
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function ManageArticle({ navigation }) {
+  const [articles, setArticles] = useState([]);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [updatedDescription, setUpdatedDescription] = useState(mockArticleData.description);
+  const [updatedTitle, setUpdatedTitle] = useState('');
+  const [updatedDescription, setUpdatedDescription] = useState('');
+  const [currentArticle, setCurrentArticle] = useState(null);
 
-  const handleEdit = () => {
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/Article/getallarticles`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setArticles(data);
+        } else {
+          console.warn('Expected an array, but got:', data);
+          setArticles([]);
+        }
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+        Alert.alert('Error', 'Failed to load articles. Please try again.');
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  const handleEdit = (article) => {
+    setCurrentArticle(article);
+    setUpdatedTitle(article.title);
+    setUpdatedDescription(article.description);
     setEditModalVisible(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (article) => {
+    setCurrentArticle(article);
     setDeleteModalVisible(true);
   };
 
-  const confirmDelete = () => {
-    alert('Article deleted successfully');
-    navigation.goBack(); // Navigate back after deletion
+  const confirmDelete = async () => {
+    if (currentArticle) {
+      try {
+        await axios.delete(`http://localhost:3000/api/Article/deletearticle/${currentArticle._id}`);
+        setArticles((prevArticles) => prevArticles.filter((article) => article._id !== currentArticle._id));
+        Alert.alert('Article deleted successfully');
+      } catch (error) {
+        console.error(error);
+        Alert.alert('Error deleting article. Please try again.');
+      } finally {
+        setDeleteModalVisible(false);
+        setCurrentArticle(null);
+      }
+    }
   };
 
-  const handleSave = () => {
-    mockArticleData.description = updatedDescription; // Simulate saving the updated description
-    alert('Article updated successfully');
-    setEditModalVisible(false);
+  const handleSave = async () => {
+    if (currentArticle) {
+      const trimmedTitle = updatedTitle.trim();
+      const trimmedDescription = updatedDescription.trim();
+
+      // Validation: Check if either field is empty
+      if (!trimmedTitle || !trimmedDescription) {
+        Alert.alert('Validation Error', 'Both title and description cannot be empty.');
+        return; // Stop the function if validation fails
+      }
+
+      const updatedArticle = { ...currentArticle, title: trimmedTitle, description: trimmedDescription };
+      try {
+        await axios.put(`http://localhost:3000/api/Article/editarticle/${updatedArticle._id}`, updatedArticle);
+        setArticles((prevArticles) =>
+          prevArticles.map((article) =>
+            article._id === updatedArticle._id ? updatedArticle : article
+          )
+        );
+        Alert.alert('Article updated successfully');
+      } catch (error) {
+        console.error('Error updating article:', error);
+        Alert.alert('Error', 'Failed to update article. Please try again.');
+      } finally {
+        setEditModalVisible(false);
+        setCurrentArticle(null);
+      }
+    }
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FeatherIcon name="chevron-left" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Manage Article</Text>
-        </View>
-
-        <View style={styles.article}>
-          <View style={styles.articleHeader}>
-            <View>
-              <Text style={styles.articleTitle}>{mockArticleData.title}</Text>
-              <Text style={styles.articleAuthor}>{mockArticleData.author}</Text>
-              <Text style={styles.articleDate}>{mockArticleData.date}</Text>
-            </View>
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.editButton} onPress={handleEdit}>
-                <Text style={styles.actionButtonText}>Edit</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-                <Text style={styles.actionButtonText}>Delete</Text>
-              </TouchableOpacity>
-            </View>
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <FeatherIcon name="chevron-left" size={24} color="#333" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Manage Articles</Text>
           </View>
-          <Image source={{ uri: mockArticleData.image }} style={styles.articleImage} />
-          <Text style={styles.articleDescription}>{mockArticleData.description}</Text>
-        </View>
 
-        {/* Edit Modal */}
-        <Modal visible={editModalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Edit Description</Text>
-              <TextInput
-                style={styles.textArea}
-                value={updatedDescription}
-                onChangeText={setUpdatedDescription}
-                multiline
-                placeholder="Edit your description here"
-                placeholderTextColor="#999"
-              />
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-                  <Text style={styles.saveButtonText}>Save</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.noButton} onPress={() => setEditModalVisible(false)}>
-                  <Text style={styles.noButtonText}>Close</Text>
-                </TouchableOpacity>
+          {articles.length === 0 ? (
+            <View style={styles.noArticlesContainer}>
+              <Text style={styles.noArticlesText}>No articles available</Text>
+            </View>
+          ) : (
+            articles.map((article) => (
+              <View key={article._id} style={styles.article}>
+                <View style={styles.articleHeader}>
+                  <Text style={styles.articleTitle}>{article.title}</Text>
+                  <Text style={styles.articlePostedBy}>{article.postedBy}</Text>
+                  <View style={styles.actionButtons}>
+                    <TouchableOpacity style={styles.editButton} onPress={() => handleEdit(article)}>
+                      <Text style={styles.actionButtonText}>Edit</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(article)}>
+                      <Text style={styles.actionButtonText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {article.image ? (
+                  <Image
+                    source={{ uri: `http://localhost:3000/${article.image.replace(/\\/g, '/')}` }}
+                    style={styles.articleImage}
+                    onError={() => console.log('Failed to load image')}
+                  />
+                ) : null}
+
+                <Text style={styles.articleDescription}>{article.description}</Text>
+              </View>
+            ))
+          )}
+
+          {/* Edit Modal */}
+          <Modal visible={editModalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Edit Article</Text>
+                <TextInput
+                  style={styles.input}
+                  value={updatedTitle}
+                  onChangeText={setUpdatedTitle}
+                  placeholder="Edit title"
+                  placeholderTextColor="#999"
+                />
+                <TextInput
+                  style={styles.textArea}
+                  value={updatedDescription}
+                  onChangeText={setUpdatedDescription}
+                  multiline
+                  placeholder="Edit description"
+                  placeholderTextColor="#999"
+                />
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                    <Text style={styles.saveButtonText}>Save</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.noButton} onPress={() => setEditModalVisible(false)}>
+                    <Text style={styles.noButtonText}>Close</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
 
-        {/* Delete Confirmation Modal */}
-        <Modal visible={deleteModalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Are you sure you want to delete this article?</Text>
-              <View style={styles.modalButtonContainer}>
-                <TouchableOpacity style={styles.confirmButton} onPress={confirmDelete}>
-                  <Text style={styles.confirmButtonText}>Yes</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.noButton} onPress={() => setDeleteModalVisible(false)}>
-                  <Text style={styles.noButtonText}>No</Text>
-                </TouchableOpacity>
+          {/* Delete Confirmation Modal */}
+          <Modal visible={deleteModalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Are you sure you want to delete this article?</Text>
+                <View style={styles.modalButtonContainer}>
+                  <TouchableOpacity style={styles.confirmButton} onPress={confirmDelete}>
+                    <Text style={styles.confirmButtonText}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.noButton} onPress={() => setDeleteModalVisible(false)}>
+                    <Text style={styles.noButtonText}>No</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
+          </Modal>
+
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -133,7 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   article: {
-    margin: 16,
+    margin: 13,
     backgroundColor: '#EFEFEF',
     borderRadius: 15,
     overflow: 'hidden',
@@ -147,25 +225,20 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#eeeeee',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: 'column',
   },
   articleTitle: {
     fontWeight: 'bold',
     fontSize: 18,
     color: '#333333',
   },
-  articleAuthor: {
-    fontSize: 14,
-    color: '#666666',
-  },
-  articleDate: {
+  articlePostedBy: {
     color: '#888888',
     fontSize: 12,
   },
   actionButtons: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
   editButton: {
     backgroundColor: '#007bff',
@@ -210,6 +283,16 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
   },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    fontSize: 16,
+    marginBottom: 15,
+    color: '#333',
+  },
   textArea: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -246,7 +329,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   noButton: {
-      backgroundColor: '#ff4d4d',
+    backgroundColor: '#ff4d4d',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -267,5 +350,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  noArticlesContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  noArticlesText: {
+    fontSize: 18,
+    color: '#888',
   },
 });

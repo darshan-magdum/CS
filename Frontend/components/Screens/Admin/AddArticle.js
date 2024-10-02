@@ -69,7 +69,7 @@ export default function AddArticle({ navigation }) {
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>Title</Text>
               <TextInput
-                style={styles.textArea}
+                style={styles.input}
                 value={form.title}
                 onChangeText={(title) => setForm({ ...form, title })}
                 placeholder="Enter Title"
@@ -150,6 +150,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontSize: 16,
     fontWeight: '500',
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 8,
+    fontSize: 16,
+    marginBottom: 15,
     color: '#333',
   },
   textArea: {
