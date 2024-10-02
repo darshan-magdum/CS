@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const StudentHome = () => {
   const navigation = useNavigation();
   const [userPosts, setUserPosts] = useState([]);
+  const [adminPosts, setAdminPosts] = useState([]);
+  const [isStudentView, setIsStudentView] = useState(true); // Track the selected view
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -28,11 +30,33 @@ const StudentHome = () => {
         }
       } catch (error) {
         console.error('Error fetching posts:', error);
-        Alert.alert('Error', 'Failed to load posts. Please try again.');
+      }
+    };
+
+    const fetchAdminPosts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/Article/getallarticles');
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          const formattedAdminPosts = data.map(article => ({
+            id: article._id,
+            title: article.title, // Assuming the articles have a title field
+            image: `http://localhost:3000/${article.image.replace(/\\/g, '/')}`, // Adjust based on your API response
+            description: article.description,
+          }));
+          setAdminPosts(formattedAdminPosts);
+        } else {
+          console.warn('Expected an array, but got:', data);
+          setAdminPosts([]);
+        }
+      } catch (error) {
+        console.error('Error fetching admin posts:', error);
       }
     };
 
     fetchPosts();
+    fetchAdminPosts();
   }, []);
 
   return (
@@ -43,19 +67,32 @@ const StudentHome = () => {
           <Ionicons name="menu" size={24} color="#FF8613" />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.safetyButton}>
-        <Ionicons name="shield" size={24} color="white" style={styles.safetyIcon} />
-        <Text style={styles.safetyButtonText}>Women's Safety Alert</Text>
-      </TouchableOpacity>
+
+      <View style={styles.selectionContainer}>
+        <TouchableOpacity
+          style={[styles.selectionButton, isStudentView && styles.selectedButton]}
+          onPress={() => setIsStudentView(true)}
+        >
+          <Text style={styles.buttonText}>Student</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.selectionButton, !isStudentView && styles.selectedButton]}
+          onPress={() => setIsStudentView(false)}
+        >
+          <Text style={styles.buttonText}>Admin</Text>
+        </TouchableOpacity>
+      </View>
+
+      <Text style={styles.sectionTitle}>{isStudentView ? 'Student Posts' : 'Admin Articles'}</Text>
       <View style={styles.postsContainer}>
-        {userPosts.length === 0 ? (
-          <Text style={styles.noPostsText}>No posts available</Text>
+        {(isStudentView ? userPosts : adminPosts).length === 0 ? (
+          <Text style={styles.noPostsText}>No {isStudentView ? 'student' : 'admin'} posts available</Text>
         ) : (
-          userPosts.map((post) => (
+          (isStudentView ? userPosts : adminPosts).map((post) => (
             <View key={post.id} style={styles.post}>
               <View style={styles.postHeader}>
-                <Text style={styles.posterName}>{post.name}</Text>
-                <Text style={styles.postDate}>{post.date}</Text>
+                <Text style={styles.posterName}>{isStudentView ? post.name : post.title}</Text>
+                {isStudentView && <Text style={styles.postDate}>{post.date}</Text>} {/* Show date only for student posts */}
               </View>
               {post.image && (
                 <Image
@@ -82,43 +119,49 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    padding: 8,
     backgroundColor: '#FF8613',
   },
   headerText: {
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#ffffff',
   },
   menuButton: {
-    width: 40,
-    height: 40,
+    width: 35,
+    height: 35,
     borderRadius: 20,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  safetyButton: {
-    margin: 16,
-    padding: 20,
-    backgroundColor: '#d5006d', // Dark pink
-    borderRadius: 25,
-    alignItems: 'center',
-    flexDirection: 'row', // Align icon and text horizontally
+  selectionContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
+    margin: 16,
   },
-  safetyIcon: {
-    marginRight: 10, // Space between icon and text
+  selectionButton: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 15,
+    backgroundColor: '#007BFF', // Blue background
+    marginHorizontal: 5,
+    alignItems: 'center',
   },
-  safetyButtonText: {
-    fontSize: 18,
+  selectedButton: {
+    backgroundColor: '#0056b3', // Darker blue when selected
+  },
+  buttonText: {
+    fontSize: 16,
     fontWeight: 'bold',
     color: 'white',
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    paddingHorizontal: 16,
+    color: '#333',
   },
   postsContainer: {
     padding: 16,

@@ -130,6 +130,20 @@ export default function StudentMenu() {
               <View style={styles.rowSpacer} />
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
+            
+            {/* Safety Alert */}
+<TouchableOpacity
+  onPress={() => navigation.navigate("SafetyAlert")}
+  style={styles.row}
+>
+  <View style={[styles.rowIcon, { backgroundColor: "#ffcc00" }]}>
+    <FeatherIcon color="#fff" name="alert-circle" size={20} />
+  </View>
+  <Text style={styles.rowLabel}>Safety Alert</Text>
+  <View style={styles.rowSpacer} />
+  <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
+</TouchableOpacity>
+
 
             {/* Create New Post */}
             <TouchableOpacity

@@ -21,6 +21,7 @@ import ViewHelpInfo from "../../components/Screens/Admin/ViewHelpInfo";
 import StudentViewPost from "../../components/Screens/Students/StudentViewPost";
 import StudentProfile from "../../components/Screens/Students/StudentProfile";
 import StudentHome from "../../components/Screens/Students/StudentHome";
+import SafetyAlert from "../../components/Screens/Students/SafetyAlert";
 import StudentAddEmergencyContact from "../../components/Screens/Students/StudentAddEmergencyContact";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -47,6 +48,7 @@ export default function HomeScreen() {
                       {/* <Stack.Screen name="SplashScreen" component={SplashScreen} /> */}
         <Stack.Screen name="InfoScreen" component={InfoScreen} />
         <Stack.Screen name="SplashSceenSignup"component={SplashSceenSignup}/>
+    
       
          
           {/* Admin Navigation */}
@@ -67,6 +69,7 @@ export default function HomeScreen() {
           <Stack.Screen name="StudentHome" component={StudentHome} />
           <Stack.Screen name="StudentMenu" component={StudentMenu} />
           <Stack.Screen name="StudentProfile" component={StudentProfile} />
+          <Stack.Screen name="SafetyAlert" component={SafetyAlert}/>
           <Stack.Screen name="StudentAddPost" component={StudentAddPost} />
           <Stack.Screen name="StudentViewPost" component={StudentViewPost} />
           <Stack.Screen name="StudentAddEmergencyContact" component={StudentAddEmergencyContact}/>
