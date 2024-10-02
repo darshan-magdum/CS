@@ -12,6 +12,7 @@ const EmergencyNumbers = require('./Routes/EmergencyNumbers');
 const UploadPosts = require('./Routes/uploadPostRoutes'); 
 const AddIncidence = require('./Routes/AddIncidenceRoutes'); 
 const AddArticle = require('./Routes/AddArticleRoutes');
+const StudentLocation = require('./Routes/studentLocationRoutes');
 
 
 
@@ -41,6 +42,7 @@ app.use("/api/EmergencyNumbers", EmergencyNumbers);
 app.use("/api/UploadPosts", UploadPosts);
 app.use("/api/Incidence", AddIncidence);
 app.use("/api/Article", AddArticle);
+app.use("/api/StudentLocation", StudentLocation);
 
 
 
