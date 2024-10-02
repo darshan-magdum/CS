@@ -13,7 +13,7 @@ export default function ViewHelplineNumbers({ navigation }) {
 
   const fetchHelplineNumbers = async () => {
     try {
-      const response = await axios.get('http://192.168.0.113:3000/api/HelplineNumbers/getallHelplineNumbers');
+      const response = await axios.get('http://localhost:3000/api/HelplineNumbers/getallHelplineNumbers');
       setHelplineData(response.data);
     } catch (error) {
       console.error('Error fetching helpline numbers:', error);

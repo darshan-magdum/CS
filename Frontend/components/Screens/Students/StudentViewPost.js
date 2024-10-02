@@ -16,7 +16,7 @@ export default function StudentViewPost({ navigation }) {
       const userId = await AsyncStorage.getItem("userId");
       if (userId) {
         try {
-          const response = await fetch(`http://192.168.0.113:3000/api/UploadPosts/getbystudent/${userId}`);
+          const response = await fetch(`http://localhost:3000/api/UploadPosts/getbystudent/${userId}`);
           const data = await response.json();
 
           if (Array.isArray(data)) {
@@ -50,7 +50,7 @@ export default function StudentViewPost({ navigation }) {
   const confirmDelete = async () => {
     if (currentPost) {
       try {
-        await axios.delete(`http://192.168.0.113:3000/api/UploadPosts/delete/${currentPost._id}`);
+        await axios.delete(`http://localhost:3000/api/UploadPosts/delete/${currentPost._id}`);
         setPosts((prevPosts) => prevPosts.filter((post) => post._id !== currentPost._id));
         Alert.alert('Post deleted successfully');
       } catch (error) {
@@ -76,7 +76,7 @@ export default function StudentViewPost({ navigation }) {
   
       const updatedPost = { ...currentPost, description: trimmedDescription };
       try {
-        await axios.put(`http://192.168.0.113:3000/api/UploadPosts/edit/${updatedPost._id}`, updatedPost);
+        await axios.put(`http://localhost:3000/api/UploadPosts/edit/${updatedPost._id}`, updatedPost);
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post._id === updatedPost._id ? updatedPost : post
@@ -139,14 +139,14 @@ export default function StudentViewPost({ navigation }) {
                   post.media.map((image, index) => (
                     <Image
                       key={index}
-                      source={{ uri: `http://192.168.0.113:3000/${image.replace(/\\/g, '/')}` }}
+                      source={{ uri: `http://localhost:3000/${image.replace(/\\/g, '/')}` }}
                       style={styles.postImage}
                       onError={() => console.log('Failed to load image')}
                     />
                   ))
                 ) : post.postImage ? (
                   <Image
-                    source={{ uri: `http://192.168.0.113:3000/${post.postImage.replace(/\\/g, '/')}` }}
+                    source={{ uri: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}` }}
                     style={styles.postImage}
                     onError={() => console.log('Failed to load image')}
                   />

@@ -47,7 +47,7 @@ export default function AddHelplineNumber({ navigation }) {
                 adminId: AdminId,
             };
     
-            const response = await axios.post('http://192.168.0.113:3000/api/HelplineNumbers/addnewNumber', payload);
+            const response = await axios.post('http://localhost:3000/api/HelplineNumbers/addnewNumber', payload);
             Alert.alert('Success', 'Helpline number added successfully', [
                 { text: 'OK', onPress: () => navigation.goBack() }
             ]);

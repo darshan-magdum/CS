@@ -18,7 +18,7 @@ export default function StudentAddPost({ navigation }) {
   const fetchUserData = useCallback(async () => {
     try {
       const userId = await AsyncStorage.getItem("userId");
-      const response = await axios.get(`http://192.168.0.113:3000/api/student/${userId}`);
+      const response = await axios.get(`http://localhost:3000/api/student/${userId}`);
       if (response.status === 200) {
         setUserData(response.data);
       }
@@ -73,7 +73,7 @@ export default function StudentAddPost({ navigation }) {
         formData.append('postImage', blob, postImage.fileName || 'photo.jpg');
       }
 
-      const response = await axios.post('http://192.168.0.113:3000/api/UploadPosts/createnewpost', formData, {
+      const response = await axios.post('http://localhost:3000/api/UploadPosts/createnewpost', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
