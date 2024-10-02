@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert, Linking } from 'react-native';
+import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import * as Location from 'expo-location'; // Use expo-location if you are using Expo
+import axios from 'axios'; // Import Axios
 import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; // Ensure the correct path
 
 export default function SafetyAlert() {
@@ -34,7 +35,9 @@ export default function SafetyAlert() {
     getLocation();
   }, []);
 
-  const handleEmergencyHelp = () => {
+  const handleEmergencyHelp = async () => {
+    console.log("Button clicked");
+
     const username = "darshan"; // Hardcoded username
     const contactNumber = "9307741995"; // Hardcoded contact number
 
@@ -43,7 +46,7 @@ export default function SafetyAlert() {
 
       // Prepare emergency data
       const emergencyData = {
-        username,
+        name: username,
         contactNumber,
         location: {
           latitude,
@@ -53,19 +56,15 @@ export default function SafetyAlert() {
 
       console.log("Emergency Data: ", emergencyData); // Log data for testing
 
-      // Construct Google Maps URL
-      const mapUrl = `https://www.google.com/maps/@${latitude},${longitude},15z`;
-
-      // Open the map URL
-      Linking.openURL(mapUrl).catch(err => 
-        Alert.alert("Error", "Failed to open maps.")
-      );
-
-      Alert.alert(
-        "Emergency Help",
-        "You have pressed the emergency help button.",
-        [{ text: "OK" }]
-      );
+      try {
+        // Send data to the backend using Axios
+        const response = await axios.post('http://192.168.0.114:3000/api/StudentLocation/addlocation', emergencyData);
+        console.log("Response from server: ", response.data);
+        Alert.alert("Success", "Emergency data sent successfully.");
+      } catch (error) {
+        Alert.alert("Error", `Failed to send emergency data: ${error.message}`);
+        console.error("Axios error:", error);
+      }
     } else {
       Alert.alert("Fetching Location", "Please wait while we get your location...");
     }
@@ -86,7 +85,6 @@ export default function SafetyAlert() {
             <Image source={emergencysafetybutton} style={styles.iconImage} />
           </TouchableOpacity>
 
-          {/* Description below the button */}
           <Text style={styles.description}>
             Press the button for emergency help only.
           </Text>
