@@ -1,33 +1,39 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const AdminHome = () => {
-const navigation = useNavigation();
-  const userReports = [
-    {
-      id: 1,
-      name: 'Alice Williams',
-      date: '2024-09-20',
-      image: 'https://via.placeholder.com/300',
-      report: 'Increased security needed in parking areas.',
-    },
-    {
-      id: 2,
-      name: 'Mark Lee',
-      date: '2024-09-21',
-      image: 'https://via.placeholder.com/300',
-      report: 'Noise disturbances late at night.',
-    },
-    {
-      id: 3,
-      name: 'Sophia Green',
-      date: '2024-09-22',
-      image: 'https://via.placeholder.com/300',
-      report: 'Request for better lighting in walkways.',
-    },
-  ];
+  const navigation = useNavigation();
+  const [userReports, setUserReports] = useState([]);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/UploadPosts/getallpost');
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          const formattedReports = data.map(report => ({
+            id: report._id,
+            name: report.studentName,
+            date: new Date(report.createdAt).toLocaleDateString(),
+            image: `http://localhost:3000/${report.postImage.replace(/\\/g, '/')}`, // Normalize the image path
+            report: report.description,
+          }));
+          setUserReports(formattedReports);
+        } else {
+          console.warn('Expected an array, but got:', data);
+          setUserReports([]);
+        }
+      } catch (error) {
+        console.error('Error fetching reports:', error);
+        Alert.alert('Error', 'Failed to load reports. Please try again.');
+      }
+    };
+
+    fetchReports();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -38,16 +44,26 @@ const navigation = useNavigation();
         </TouchableOpacity>
       </View>
       <View style={styles.reportsContainer}>
-        {userReports.map((report) => (
-          <View key={report.id} style={styles.report}>
-            <View style={styles.reportHeader}>
-              <Text style={styles.reporterName}>{report.name}</Text>
-              <Text style={styles.reportDate}>{report.date}</Text>
+        {userReports.length === 0 ? (
+          <Text style={styles.noReportsText}>No reports available</Text>
+        ) : (
+          userReports.map((report) => (
+            <View key={report.id} style={styles.report}>
+              <View style={styles.reportHeader}>
+                <Text style={styles.reporterName}>{report.name}</Text>
+                <Text style={styles.reportDate}>{report.date}</Text>
+              </View>
+              {report.image && (
+                <Image
+                  source={{ uri: report.image }}
+                  style={styles.reportImage}
+                  onError={() => console.log('Failed to load image')}
+                />
+              )}
+              <Text style={styles.reportDescription}>{report.report}</Text>
             </View>
-            <Image source={{ uri: report.image }} style={styles.reportImage} />
-            <Text style={styles.reportDescription}>{report.report}</Text>
-          </View>
-        ))}
+          ))
+        )}
       </View>
     </ScrollView>
   );
@@ -56,7 +72,7 @@ const navigation = useNavigation();
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: '#eaeaea',
   },
   header: {
     flexDirection: 'row',
@@ -107,15 +123,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   reportImage: {
-    width: '100%',
-    height: 200,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
+    width: '100%',
+    height: 340,
+    marginTop: 10,
   },
   reportDescription: {
     padding: 10,
     fontSize: 15,
     color: '#444444',
+  },
+  noReportsText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 18,
+    color: '#888888',
   },
 });
 

@@ -1,33 +1,39 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
 const StudentHome = () => {
   const navigation = useNavigation();
-  const userPosts = [
-    {
-      id: 1,
-      name: 'John Doe',
-      date: '2024-09-20',
-      image: 'https://via.placeholder.com/300',
-      description: 'Had a great day at the campus! Excited for the upcoming events!',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      date: '2024-09-21',
-      image: 'https://via.placeholder.com/300',
-      description: 'Excited for the upcoming events!',
-    },
-    {
-      id: 3,
-      name: 'Alex Johnson',
-      date: '2024-09-22',
-      image: 'https://via.placeholder.com/300',
-      description: 'Studying hard for the exams!',
-    },
-  ];
+  const [userPosts, setUserPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/UploadPosts/getallpost');
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          const formattedPosts = data.map(post => ({
+            id: post._id,
+            name: post.studentName,
+            date: new Date(post.createdAt).toLocaleDateString(),
+            image: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`, // Normalize the image path
+            description: post.description,
+          }));
+          setUserPosts(formattedPosts);
+        } else {
+          console.warn('Expected an array, but got:', data);
+          setUserPosts([]);
+        }
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        Alert.alert('Error', 'Failed to load posts. Please try again.');
+      }
+    };
+
+    fetchPosts();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -42,16 +48,26 @@ const StudentHome = () => {
         <Text style={styles.safetyButtonText}>Women's Safety Alert</Text>
       </TouchableOpacity>
       <View style={styles.postsContainer}>
-        {userPosts.map((post) => (
-          <View key={post.id} style={styles.post}>
-            <View style={styles.postHeader}>
-              <Text style={styles.posterName}>{post.name}</Text>
-              <Text style={styles.postDate}>{post.date}</Text>
+        {userPosts.length === 0 ? (
+          <Text style={styles.noPostsText}>No posts available</Text>
+        ) : (
+          userPosts.map((post) => (
+            <View key={post.id} style={styles.post}>
+              <View style={styles.postHeader}>
+                <Text style={styles.posterName}>{post.name}</Text>
+                <Text style={styles.postDate}>{post.date}</Text>
+              </View>
+              {post.image && (
+                <Image
+                  source={{ uri: post.image }}
+                  style={styles.postImage}
+                  onError={() => console.log('Failed to load image')}
+                />
+              )}
+              <Text style={styles.postDescription}>{post.description}</Text>
             </View>
-            <Image source={{ uri: post.image }} style={styles.postImage} />
-            <Text style={styles.postDescription}>{post.description}</Text>
-          </View>
-        ))}
+          ))
+        )}
       </View>
     </ScrollView>
   );
@@ -134,7 +150,8 @@ const styles = StyleSheet.create({
   },
   postImage: {
     width: '100%',
-    height: 200,
+    height: 340,
+    marginTop: 10,
     borderBottomLeftRadius: 15,
     borderBottomRightRadius: 15,
   },
@@ -142,6 +159,12 @@ const styles = StyleSheet.create({
     padding: 10,
     fontSize: 15,
     color: '#444444',
+  },
+  noPostsText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 18,
+    color: '#888888',
   },
 });
 
