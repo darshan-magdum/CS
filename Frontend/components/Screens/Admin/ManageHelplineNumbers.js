@@ -3,7 +3,6 @@ import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Modal, TextInpu
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 
-// Replace this with the path to your local image
 const policeImage = require('../../../assets/images/police.png');
 
 export default function ManageHelplineNumbers({ navigation }) {
@@ -33,7 +32,7 @@ export default function ManageHelplineNumbers({ navigation }) {
     setUpdatedName(helpline.name);
     setUpdatedNumber(helpline.contactNo);
     setEditModalVisible(true);
-    setErrors({ name: '', number: '' }); // Clear any existing errors
+    setErrors({ name: '', number: '' });
   };
 
   const handleDelete = (helpline) => {
@@ -109,12 +108,16 @@ export default function ManageHelplineNumbers({ navigation }) {
           <Text style={styles.headerTitle}>View Helpline Numbers</Text>
         </View>
 
-        <FlatList
-          data={helplineData}
-          renderItem={renderHelplineItem}
-          keyExtractor={item => item._id}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        {helplineData.length === 0 ? (
+          <Text style={styles.noRecordsText}>No records available</Text>
+        ) : (
+          <FlatList
+            data={helplineData}
+            renderItem={renderHelplineItem}
+            keyExtractor={item => item._id}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        )}
 
         {/* Edit Modal */}
         <Modal visible={editModalVisible} animationType="slide" transparent={true}>
@@ -245,6 +248,12 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  noRecordsText: {
+    textAlign: 'center',
+    fontSize: 18,
+    color: '#888',
+    marginTop: 20,
   },
   modalContainer: {
     flex: 1,

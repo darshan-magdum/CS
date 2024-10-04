@@ -53,12 +53,18 @@ export default function ViewSafetyDetails({ navigation }) {
           <Text style={styles.headerTitle}>Safety Details</Text>
         </View>
 
-        <FlatList
-          data={safetyData}
-          renderItem={renderItem}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        {safetyData.length === 0 ? (
+          <View style={styles.noRecordsContainer}>
+            <Text style={styles.noRecordsText}>No records available</Text>
+          </View>
+        ) : (
+          <FlatList
+            data={safetyData}
+            renderItem={renderItem}
+            keyExtractor={(item) => item._id}
+            contentContainerStyle={{ paddingBottom: 20 }}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -119,5 +125,14 @@ const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
     marginTop: 4,
+  },
+  noRecordsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noRecordsText: {
+    fontSize: 16,
+    color: '#888',
   },
 });
