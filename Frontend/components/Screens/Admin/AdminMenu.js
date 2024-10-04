@@ -170,18 +170,7 @@ export default function AdminMenu() {
               <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
             </TouchableOpacity>
 
-            {/* View help Info */}
-            <TouchableOpacity
-              onPress={() => navigation.navigate("ViewHelpInfo")}
-              style={styles.row}
-            >
-              <View style={[styles.rowIcon, { backgroundColor: "red" }]}>
-                <FeatherIcon color="#fff" name="eye" size={20} />
-              </View>
-              <Text style={styles.rowLabel}>View Help Alerts</Text>
-              <View style={styles.rowSpacer} />
-              <FeatherIcon color="#C6C6C6" name="chevron-right" size={20} />
-            </TouchableOpacity>
+        
 
    {/* Logout */}
             <TouchableOpacity onPress={handleLogout} style={styles.row}>
