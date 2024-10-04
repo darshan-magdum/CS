@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
 import * as Location from 'expo-location'; // Use expo-location if you are using Expo
 import axios from 'axios'; // Import Axios
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; // Ensure the correct path
 
 export default function SafetyAlert() {
   const [location, setLocation] = useState(null);
   const [fetchingLocation, setFetchingLocation] = useState(false); // Track if location is being fetched
+  const [userData, setUserData] = useState(null); // State to hold user data
 
   useEffect(() => {
     const getLocation = async () => {
@@ -35,11 +37,39 @@ export default function SafetyAlert() {
     getLocation();
   }, []);
 
+  useEffect(() => {
+    fetchUserData(); // Fetch user data on component mount
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId'); // Retrieve user ID from AsyncStorage
+      console.log('Fetching user details for userId:', userId);
+
+      const response = await axios.get(`http://localhost:3000/api/student/${userId}`); // Fetch user details using user ID
+      console.log('User Details:', response.data);
+
+      if (response.status === 200) {
+        setUserData(response.data); // Set user data to state
+      } else {
+        console.error('Failed to fetch user details');
+      }
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      // Handle error scenarios
+    }
+  };
+
   const handleEmergencyHelp = async () => {
     console.log("Button clicked");
 
-    const username = "darshan"; // Hardcoded username
-    const contactNumber = "9307741995"; // Hardcoded contact number
+    // Check if userData is available
+    if (!userData) {
+      Alert.alert("Error", "User data is not available.");
+      return;
+    }
+
+    const { name: username, mobile: contactNumber } = userData; // Destructure name and mobile from userData
 
     if (location) {
       const { latitude, longitude } = location;
