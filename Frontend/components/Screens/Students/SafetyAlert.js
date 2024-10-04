@@ -4,6 +4,9 @@ import * as Location from 'expo-location'; // Use expo-location if you are using
 import axios from 'axios'; // Import Axios
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; // Ensure the correct path
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function SafetyAlert() {
   const [location, setLocation] = useState(null);
@@ -103,7 +106,11 @@ export default function SafetyAlert() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
+     
         <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FeatherIcon name="chevron-left" size={24} color="#333" />
+          </TouchableOpacity>
           <Text style={styles.headerTitle}>Safety Alert</Text>
         </View>
 
@@ -132,8 +139,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingVertical: 12,
+    paddingHorizontal: 24,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
@@ -141,7 +151,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#333',
+    textAlign: 'center',
+    flex: 1,
   },
+
   detailsContainer: {
     paddingHorizontal: 24,
     paddingTop: 0,
