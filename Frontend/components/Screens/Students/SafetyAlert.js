@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert } from 'react-native';
-import * as Location from 'expo-location'; // Use expo-location if you are using Expo
-import axios from 'axios'; // Import Axios
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
-import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; // Ensure the correct path
+import * as Location from 'expo-location'; 
+import axios from 'axios'; 
+import AsyncStorage from '@react-native-async-storage/async-storage'; 
+import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; 
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import { useNavigation } from '@react-navigation/native';
 
-
-export default function SafetyAlert() {
+export default function SafetyAlert({ navigation }) { // Receive navigation prop
   const [location, setLocation] = useState(null);
-  const [fetchingLocation, setFetchingLocation] = useState(false); // Track if location is being fetched
-  const [userData, setUserData] = useState(null); // State to hold user data
+  const [fetchingLocation, setFetchingLocation] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -23,7 +21,6 @@ export default function SafetyAlert() {
         return;
       }
 
-      // Get current location
       try {
         let currentLocation = await Location.getCurrentPositionAsync({});
         setLocation({
@@ -41,62 +38,40 @@ export default function SafetyAlert() {
   }, []);
 
   useEffect(() => {
-    fetchUserData(); // Fetch user data on component mount
+    fetchUserData();
   }, []);
 
   const fetchUserData = async () => {
     try {
-      const userId = await AsyncStorage.getItem('userId'); // Retrieve user ID from AsyncStorage
-      console.log('Fetching user details for userId:', userId);
-
-      const response = await axios.get(`http://localhost:3000/api/student/${userId}`); // Fetch user details using user ID
-      console.log('User Details:', response.data);
-
+      const userId = await AsyncStorage.getItem('userId');
+      const response = await axios.get(`http://localhost:3000/api/student/${userId}`);
       if (response.status === 200) {
-        setUserData(response.data); // Set user data to state
+        setUserData(response.data);
       } else {
         console.error('Failed to fetch user details');
       }
     } catch (error) {
       console.error('Error fetching user details:', error);
-      // Handle error scenarios
     }
   };
 
   const handleEmergencyHelp = async () => {
-    console.log("Button clicked");
-
-    // Check if userData is available
     if (!userData) {
       Alert.alert("Error", "User data is not available.");
       return;
     }
 
-    const { name: username, mobile: contactNumber } = userData; // Destructure name and mobile from userData
+    const { name: username, mobile: contactNumber } = userData;
 
     if (location) {
       const { latitude, longitude } = location;
-
-      // Prepare emergency data
-      const emergencyData = {
-        name: username,
-        contactNumber,
-        location: {
-          latitude,
-          longitude,
-        },
-      };
-
-      console.log("Emergency Data: ", emergencyData); // Log data for testing
+      const emergencyData = { name: username, contactNumber, location: { latitude, longitude } };
 
       try {
-        // Send data to the backend using Axios
         const response = await axios.post('http://localhost:3000/api/StudentLocation/addlocation', emergencyData);
-        console.log("Response from server: ", response.data);
         Alert.alert("Success", "Emergency data sent successfully.");
       } catch (error) {
         Alert.alert("Error", `Failed to send emergency data: ${error.message}`);
-        console.error("Axios error:", error);
       }
     } else {
       Alert.alert("Fetching Location", "Please wait while we get your location...");
@@ -106,9 +81,8 @@ export default function SafetyAlert() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <View style={styles.container}>
-     
         <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <FeatherIcon name="chevron-left" size={24} color="#333" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Safety Alert</Text>
@@ -154,7 +128,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     flex: 1,
   },
-
   detailsContainer: {
     paddingHorizontal: 24,
     paddingTop: 0,
