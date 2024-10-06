@@ -15,7 +15,7 @@ import axios from 'axios';
 import logo from '../../../assets/images/logo.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function Login() {
+export default function Login({ setUserType }) {
   const navigation = useNavigation();
 
   const [form, setForm] = useState({
@@ -36,7 +36,7 @@ export default function Login() {
       password: '',
       general: '',
     };
-  
+
     // Validation
     if (!form.email) {
       newError.email = 'Email Address is required';
@@ -45,18 +45,18 @@ export default function Login() {
       newError.email = 'Enter a valid email address';
       valid = false;
     }
-  
+
     if (!form.password) {
       newError.password = 'Password is required';
       valid = false;
     }
-  
+
     setError(newError);
-  
+
     if (!valid) {
       return;
     }
-  
+
     try {
       // Attempt user login
       const userResponse = await axios.post('http://localhost:3000/api/student/Userlogin', form);
@@ -64,12 +64,12 @@ export default function Login() {
 
       await AsyncStorage.setItem('token', token);
       await AsyncStorage.setItem('userId', userId);
-      // Clear any admin/vendor tokens
       await AsyncStorage.removeItem('adminToken');
       await AsyncStorage.removeItem('adminId');
 
       setForm({ email: '', password: '' });
       Alert.alert(message);
+      setUserType('student'); // Set user type on successful login
       navigation.navigate('StudentHome');
 
     } catch (userError) {
@@ -80,12 +80,12 @@ export default function Login() {
 
         await AsyncStorage.setItem('adminToken', token);
         await AsyncStorage.setItem('adminId', adminId);
-        // Clear user tokens
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('userId');
 
         setForm({ email: '', password: '' });
         Alert.alert(message);
+        setUserType('admin'); // Set user type on successful admin login
         navigation.navigate('AdminHome');
 
       } catch (adminError) {
@@ -179,11 +179,11 @@ export default function Login() {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('ForgotPassword')}
               style={{ marginTop: 'auto' }}>
               <Text style={styles.formLink}>Forgot password?</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </KeyboardAwareScrollView>
 
@@ -219,7 +219,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#929292',
   },
-  /** Header */
   header: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -230,7 +229,6 @@ const styles = StyleSheet.create({
     height: 200,
     alignSelf: 'center',
   },
-  /** Form */
   form: {
     marginBottom: 24,
     paddingHorizontal: 24,
@@ -251,7 +249,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     letterSpacing: 0.15,
   },
-  /** Input */
   input: {
     marginBottom: 16,
   },
@@ -273,7 +270,6 @@ const styles = StyleSheet.create({
     borderColor: '#C9D3DB',
     borderStyle: 'solid',
   },
-  /** Button */
   btn: {
     flexDirection: 'row',
     alignItems: 'center',

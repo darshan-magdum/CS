@@ -8,14 +8,19 @@ import {
   TouchableOpacity,
   Switch,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import profile from "../../../assets/images/profile.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { CommonActions } from '@react-navigation/native';
 
-export default function StudentMenu() {
+
+
+
+export default function StudentMenu({ setUserType }) {
   const navigation = useNavigation();
 
   const [userData, setUserData] = useState(null); // State to hold user data
@@ -50,15 +55,19 @@ export default function StudentMenu() {
     }, [fetchUserData])
   );
 
+
   const handleLogout = async () => {
     try {
-      await AsyncStorage.clear(); // Clear all AsyncStorage
-      console.warn("Clearing AsyncStorage and navigating to Login screen");
-      navigation.navigate("Login"); // Navigate to the login screen
+      await AsyncStorage.clear(); // Clear AsyncStorage
+      console.warn("Logged out and clearing AsyncStorage.");
+      setUserType(null); // Reset user type
+      navigation.replace("Login"); // Navigate to the login screen
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);
+      Alert.alert("Logout Failed", "Please try again.");
     }
   };
+
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>

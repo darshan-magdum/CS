@@ -8,25 +8,29 @@ import {
   TouchableOpacity,
   Switch,
   Image,
+  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import profile from "../../../assets/images/collgelogo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CommonActions } from '@react-navigation/native'; 
 
 
-export default function AdminMenu() {
+export default function AdminMenu({ setUserType }) {
   const navigation = useNavigation();
 
 
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.clear(); // Clear all AsyncStorage
-      console.warn("Clearing AsyncStorage and navigating to Login screen");
-      navigation.navigate("Login"); // Navigate to the login screen
+      await AsyncStorage.clear(); // Clear AsyncStorage
+      console.warn("Logged out and clearing AsyncStorage.");
+      setUserType(null); // Reset user type
+      navigation.replace("Login"); // Navigate to the login screen
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);
+      Alert.alert("Logout Failed", "Please try again.");
     }
   };
 
