@@ -15,8 +15,6 @@ const AddArticle = require('./Routes/AddArticleRoutes');
 const StudentLocation = require('./Routes/studentLocationRoutes');
 
 
-
-
 // Load environment variables from .env file
 dotenv.config();
 
@@ -43,8 +41,6 @@ app.use("/api/UploadPosts", UploadPosts);
 app.use("/api/Incidence", AddIncidence);
 app.use("/api/Article", AddArticle);
 app.use("/api/StudentLocation", StudentLocation);
-
-
 
 
 // Define the port for the server

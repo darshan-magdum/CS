@@ -5,7 +5,7 @@ const EmergencyContact = require('../Models/AddEmergencyNumbers');
 // Create a new emergency contact
 router.post('/addNewContact', async (req, res) => {
     try {
-        const { name, contactNo, studentId } = req.body; // Include studentId
+        const { name, contactNo, studentId } = req.body;
         const emergencyContact = new EmergencyContact({ name, contactNo, studentId });
         await emergencyContact.save();
         res.status(201).json(emergencyContact);
@@ -54,10 +54,10 @@ router.get('/getSpecificEmergencyContact/:id', async (req, res) => {
 // Update an emergency contact
 router.put('/updateEmergencyContact/:id', async (req, res) => {
     try {
-        const { name, contactNo, studentId } = req.body; // Include studentId
+        const { name, contactNo, studentId } = req.body; 
         const emergencyContact = await EmergencyContact.findByIdAndUpdate(
             req.params.id,
-            { name, contactNo, studentId }, // Update studentId as well
+            { name, contactNo, studentId }, 
             { new: true, runValidators: true }
         );
         if (!emergencyContact) return res.status(404).json({ message: 'Emergency contact not found' });

@@ -102,7 +102,7 @@ router.post('/Userlogin', async (req, res) => {
 });
 
 
-// Route: GET /user/:id (Replace 'user/:id' with your desired endpoint)
+// Route: GET /user/:id 
 router.get('/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -139,7 +139,7 @@ const updateSchema = Joi.object({
   mobile: Joi.string().required().label('Mobile'),
 });
 
-// Route: PUT /user/:id (Replace 'user/:id' with your desired endpoint)
+// Route: PUT /user/:id 
 router.put('/:id', async (req, res) => {
   try {
     const userId = req.params.id;
@@ -162,8 +162,7 @@ router.put('/:id', async (req, res) => {
       return res.status(404).send({ message: 'Student not found' });
     }
 
-    // Optionally, you can re-generate JWT token here if needed
-
+  
     // Return updated user details
     res.status(200).send({
       userId: updatedUser._id,

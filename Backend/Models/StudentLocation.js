@@ -12,7 +12,7 @@ const studentLocationSchema = new mongoose.Schema({
   location: {
     type: {
       type: String,
-      enum: ['Point'], // 'location.type' must be 'Point'
+      enum: ['Point'], 
       required: true,
     },
     coordinates: {

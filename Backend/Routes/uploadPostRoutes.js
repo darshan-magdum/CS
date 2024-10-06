@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const CreatePost = require('../models/UploadPost'); // Ensure this points to the updated model
+const CreatePost = require('../models/UploadPost'); 
 
 // Set up storage for multer
 const storage = multer.diskStorage({
@@ -20,9 +20,9 @@ const upload = multer({ storage: storage });
 // Route to create a new post
 router.post("/createnewpost", upload.single('postImage'), async (req, res) => {
   try {
-    const { description, studentID, studentName } = req.body; // Added studentName
+    const { description, studentID, studentName } = req.body; 
 
-    const postImage = req.file ? req.file.path : null; // Change from foodImage to postImage
+    const postImage = req.file ? req.file.path : null; 
 
     // Check if all fields are provided
     if (!description || !postImage || !studentID || !studentName) {
@@ -31,9 +31,9 @@ router.post("/createnewpost", upload.single('postImage'), async (req, res) => {
 
     const newPost = new CreatePost({
       description,
-      postImage, // Change from foodImage to postImage
+      postImage, 
       studentID,
-      studentName, // Added studentName
+      studentName, 
     });
 
     const savedPost = await newPost.save();
@@ -46,12 +46,9 @@ router.post("/createnewpost", upload.single('postImage'), async (req, res) => {
 
 // Route to update an existing post
 router.put("/edit/:id", upload.single('postImage'), async (req, res) => {
-  console.log('Received File:', req.file); // Debugging: Log file info
-  console.log('Received Body:', req.body); // Debugging: Log form data
-
   try {
-    const { description, studentID, studentName } = req.body; // Updated fields
-    const postImage = req.file ? req.file.path : req.body.postImage; // Use new file if uploaded, else keep the old one
+    const { description, studentID, studentName } = req.body; 
+    const postImage = req.file ? req.file.path : req.body.postImage; 
     const postId = req.params.id;
 
     // Check if all fields are provided
@@ -61,9 +58,9 @@ router.put("/edit/:id", upload.single('postImage'), async (req, res) => {
 
     const updatedPost = await CreatePost.findByIdAndUpdate(postId, {
       description,
-      postImage, // Change from foodImage to postImage
+      postImage, 
       studentID,
-      studentName, // Added studentName
+      studentName, 
     }, { new: true });
 
     if (!updatedPost) {

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const AddIncident = require('../models/AddIncidence'); // Ensure this points to the updated model
+const AddIncident = require('../models/AddIncidence'); 
 
 // Set up storage for multer
 const storage = multer.diskStorage({

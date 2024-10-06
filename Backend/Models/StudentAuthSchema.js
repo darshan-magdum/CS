@@ -9,5 +9,4 @@ const StudentSchema = new mongoose.Schema({
 
 const UserSignup = mongoose.model('StudentSignup', StudentSchema);
 
-// Directly export the model
 module.exports = UserSignup;

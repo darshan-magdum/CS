@@ -13,7 +13,7 @@ const helplineNumberSchema = new mongoose.Schema({
         unique: true,
         validate: {
             validator: function(v) {
-                return /^\+?\d{10,15}$/.test(v); // Adjust regex as needed
+                return /^\+?\d{10,15}$/.test(v);
             },
             message: props => `${props.value} is not a valid contact number!`
         }
