@@ -23,7 +23,7 @@ export default function StudentAddIncident({ navigation }) {
       const response = await axios.get(`http://localhost:3000/api/student/${userId}`);
       if (response.status === 200) {
         setUserData(response.data);
-        // Set reportedBy to user's name
+       
         setForm(prevForm => ({ ...prevForm, reportedBy: response.data.name }));
       }
     } catch (error) {

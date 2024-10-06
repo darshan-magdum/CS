@@ -7,7 +7,7 @@ const StudentHome = () => {
   const navigation = useNavigation();
   const [userPosts, setUserPosts] = useState([]);
   const [adminPosts, setAdminPosts] = useState([]);
-  const [isStudentView, setIsStudentView] = useState(true); // Track the selected view
+  const [isStudentView, setIsStudentView] = useState(true); 
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -20,7 +20,7 @@ const StudentHome = () => {
             id: post._id,
             name: post.studentName,
             date: new Date(post.createdAt).toLocaleDateString(),
-            image: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`, // Normalize the image path
+            image: `http://localhost:3000/${post.postImage.replace(/\\/g, '/')}`, 
             description: post.description,
           }));
           setUserPosts(formattedPosts);
@@ -41,8 +41,8 @@ const StudentHome = () => {
         if (Array.isArray(data)) {
           const formattedAdminPosts = data.map(article => ({
             id: article._id,
-            title: article.title, // Assuming the articles have a title field
-            image: `http://localhost:3000/${article.image.replace(/\\/g, '/')}`, // Adjust based on your API response
+            title: article.title, 
+            image: `http://localhost:3000/${article.image.replace(/\\/g, '/')}`, 
             description: article.description,
           }));
           setAdminPosts(formattedAdminPosts);
@@ -144,12 +144,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     borderRadius: 15,
-    backgroundColor: '#007BFF', // Blue background
+    backgroundColor: '#007BFF', 
     marginHorizontal: 5,
     alignItems: 'center',
   },
   selectedButton: {
-    backgroundColor: '#0056b3', // Darker blue when selected
+    backgroundColor: '#0056b3', 
   },
   buttonText: {
     fontSize: 16,

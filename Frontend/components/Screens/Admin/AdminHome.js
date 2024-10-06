@@ -18,7 +18,7 @@ const AdminHome = () => {
             id: report._id,
             name: report.studentName,
             date: new Date(report.createdAt).toLocaleDateString(),
-            image: `http://localhost:3000/${report.postImage.replace(/\\/g, '/')}`, // Normalize the image path
+            image: `http://localhost:3000/${report.postImage.replace(/\\/g, '/')}`, 
             report: report.description,
           }));
           setUserReports(formattedReports);

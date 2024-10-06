@@ -3,7 +3,7 @@ import { StyleSheet, SafeAreaView, View, Text, TouchableOpacity, Image, Alert, F
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import axios from 'axios';
 
-const SafetyImage = require('../../../assets/images/safetyimage.jpg'); // Assuming this is the image you want to use
+const SafetyImage = require('../../../assets/images/safetyimage.jpg');
 
 export default function ViewSafetyDetails({ navigation }) {
   const [safetyData, setSafetyData] = useState([]);

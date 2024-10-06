@@ -37,11 +37,11 @@ export default function AddHelplineNumber({ navigation }) {
             hasError = true;
         }
     
-        if (hasError) return; // Stop if there are validation errors
+        if (hasError) return; 
     
         setLoading(true);
         try {
-            // Add AdminId to the payload
+         
             const payload = {
                 ...form,
                 adminId: AdminId,

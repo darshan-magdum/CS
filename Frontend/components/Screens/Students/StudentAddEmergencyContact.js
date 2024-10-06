@@ -19,7 +19,7 @@ export default function StudentAddEmergencyContact({ navigation }) {
   };
 
   const validateContactNumber = (contactNumber) => {
-    const regex = /^\+?\d{10,15}$/; // Adjust regex as needed
+    const regex = /^\+?\d{10,15}$/; 
     return regex.test(contactNumber);
   };
 

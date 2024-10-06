@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import emergencysafetybutton from "../../../assets/images/emergencysafetybutton.png"; 
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
-export default function SafetyAlert({ navigation }) { // Receive navigation prop
+export default function SafetyAlert({ navigation }) { 
   const [location, setLocation] = useState(null);
   const [fetchingLocation, setFetchingLocation] = useState(false);
   const [userData, setUserData] = useState(null);

@@ -43,7 +43,7 @@ export default function StudentMenu({ setUserType }) {
       console.error("Error fetching user details:", error);
       // Handle error scenarios
     }
-  }, []); // Add empty dependency array to ensure this function is stable and does not change
+  }, []); 
 
   useEffect(() => {
     fetchUserData(); // Fetch user data on component mount

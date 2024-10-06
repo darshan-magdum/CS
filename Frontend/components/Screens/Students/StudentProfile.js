@@ -118,6 +118,6 @@ const styles = StyleSheet.create({
   },
   noRecordText: {
     fontSize: 18,
-    color: '#999', // example color
+    color: '#999', 
   },
 });

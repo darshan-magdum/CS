@@ -11,7 +11,7 @@ export default function AddArticle({ navigation }) {
     title: '',
     description: '',
     articleImage: null,
-    postedBy: 'JJMCOE - ADMIN', // Static value for postedBy
+    postedBy: 'JJMCOE - ADMIN', 
   });
 
   const handleImagePick = async () => {
